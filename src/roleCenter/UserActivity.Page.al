@@ -16,31 +16,28 @@ page 50101 UserActivity
                 cuegroup(Group)
                 {
                     Caption = 'Group Name';
-                    field(Field1; MyCueValue())
+                    field(Field1; Rec."No. of Cart Entries")
                     {
                         ApplicationArea = All;
-                        Caption = 'My Field 1';
-                        ToolTip = 'My Field 1';
-                        Image = Heart;
+                        ToolTip = 'No. of Cart Entries';
+                        Image = Checklist;
                         Style = Favorable;
-
-                        trigger OnDrillDown()
-                        begin
-                            Sleep(1000);
-                        end;
                     }
-                    field(Field2; Rec."No. of Customers")
+                    field(Field2; Rec."No . of Chairs")
                     {
                         ApplicationArea = All;
-                        Caption = 'No. of Customers';
+                        Caption = 'No. of Chairs';
                         ToolTip = 'My Field 2';
-                        Style = Strong;
+                        Image = Checklist;
+                        Style = Favorable;
                     }
-                    field(Field3; MyCueValue())
+                    field(Field3; Rec."No . of Bikes")
                     {
                         ApplicationArea = All;
-                        Caption = 'My Field 3';
+                        Caption = 'No. of Bikes';
                         ToolTip = 'My Field 3';
+                        Image = Checklist;
+                        Style = Favorable;
                     }
                 }
             }

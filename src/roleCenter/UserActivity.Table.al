@@ -19,6 +19,23 @@ table 50100 UserActivity
             CalcFormula = count(Customer);
             Caption = 'No. of Customers';
         }
+        field(3; "No. of Cart Entries"; Integer)
+        {
+            FieldClass = FlowField;
+            CalcFormula = count("Cart Entry");
+            Caption = 'No. of Cart Entries';
+        }
+        field(4; "No . of Bikes"; Integer)
+        {
+            FieldClass = FlowField;
+            CalcFormula = count(Item where("Item Category Code" = const('BIKE')));
+
+        }
+        field(5; "No . of Chairs"; Integer)
+        {
+            FieldClass = FlowField;
+            CalcFormula = count(Item where("Item Category Code" = const('CHAIR')));
+        }
     }
     keys
     {
