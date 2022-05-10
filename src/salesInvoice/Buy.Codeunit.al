@@ -7,6 +7,7 @@ codeunit 50100 "Buy"
     var
         CartEntry: Record "Cart Entry";
         SalesHeader: Record "Sales Header";
+        SalesPost: Codeunit "Sales-Post";
         LineNo: Integer;
     begin
         CreateSalesHeader(SalesHeader, "Sales Document Type"::Invoice, '01121212');
@@ -15,6 +16,8 @@ codeunit 50100 "Buy"
                 CreateSalesLine(SalesHeader, "Sales Line Type"::Item, CartEntry."Item No.", CartEntry.Quantity, LineNo);
             until CartEntry.Next() = 0;
         OpenSalesDocument(SalesHeader);
+        SalesPost.Run(SalesHeader);
+
         CartEntry.DeleteAll();
     end;
 
@@ -25,6 +28,7 @@ codeunit 50100 "Buy"
         SalesHeader."No." := '';
         SalesHeader.Insert(true);
         SalesHeader.Validate("Sell-to Customer No.", CustomerNo);
+        SalesHeader.Validate("Payment Method Code", 'CASH');
         SalesHeader.Modify(true);
     end;
 

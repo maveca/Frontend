@@ -67,11 +67,7 @@ page 50101 UserActivity
                     {
                         Image = TileYellow;
                         ToolTip = 'Yellow action';
-
-                        trigger OnAction()
-                        begin
-                            Message('Goodbye!');
-                        end;
+                        RunObject = Codeunit Pay;
                     }
                 }
 

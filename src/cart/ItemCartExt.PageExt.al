@@ -3,6 +3,17 @@
 /// </summary>
 pageextension 50100 "Item Cart Ext." extends "Item Card"
 {
+    layout
+    {
+        addbefore(ItemPicture)
+        {
+            part("Cart Factbox"; "Cart Factbox")
+            {
+                ApplicationArea = All;
+                Caption = 'Cart';
+            }
+        }
+    }
 
     actions
     {
