@@ -1,7 +1,7 @@
 /// <summary>
 /// Codeunit CreateSalesInvoice for creating new sales invoice.
 /// </summary>
-codeunit 50100 CreateSalesInvoice
+codeunit 50100 "Buy"
 {
     trigger OnRun()
     var
@@ -15,6 +15,7 @@ codeunit 50100 CreateSalesInvoice
                 CreateSalesLine(SalesHeader, "Sales Line Type"::Item, CartEntry."Item No.", CartEntry.Quantity, LineNo);
             until CartEntry.Next() = 0;
         OpenSalesDocument(SalesHeader);
+        CartEntry.DeleteAll();
     end;
 
     local procedure CreateSalesHeader(var SalesHeader: Record "Sales Header"; DocType: Enum "Sales Document Type"; CustomerNo: Code[20])
