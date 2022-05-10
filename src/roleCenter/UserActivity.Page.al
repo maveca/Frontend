@@ -60,7 +60,7 @@ page 50101 UserActivity
                         Image = TileBrickNew;
                         Caption = 'Create Sales Invoice';
                         ToolTip = 'This action will create new sales invoice and then hopefully also post it.';
-                        RunObject = Codeunit CreateSalesInvoice;
+                        RunObject = Codeunit Buy;
                     }
 
                     action(ActionYellow)

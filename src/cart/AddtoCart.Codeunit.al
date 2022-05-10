@@ -14,12 +14,9 @@ codeunit 50101 "Add to Cart"
         if CartEntry.FindFirst() then begin
             CartEntry.Validate(Quantity, CartEntry.Quantity + 1);
             CartEntry.Modify(true);
-
-        end
-        else
+        end else
             AddNewEntry(Rec);
         Message('Item %1 is added to your cart', Rec.Description);
-
     end;
 
     local procedure AddNewEntry(var Rec: Record Item)

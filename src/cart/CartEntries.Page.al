@@ -62,7 +62,7 @@ page 50103 "Cart Entries"
                 Promoted = true;
                 PromotedOnly = true;
                 PromotedCategory = Process;
-                RunObject = codeunit CreateSalesInvoice;
+                RunObject = codeunit Buy;
                 ToolTip = 'Executes the Buy action.';
             }
         }
