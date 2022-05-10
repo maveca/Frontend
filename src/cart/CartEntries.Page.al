@@ -49,4 +49,22 @@ page 50103 "Cart Entries"
             }
         }
     }
+
+    actions
+    {
+        area(Processing)
+        {
+            action(Buy)
+            {
+                ApplicationArea = All;
+                Caption = 'Buy';
+                Image = Invoice;
+                Promoted = true;
+                PromotedOnly = true;
+                PromotedCategory = Process;
+                RunObject = codeunit CreateSalesInvoice;
+                ToolTip = 'Executes the Buy action.';
+            }
+        }
+    }
 }

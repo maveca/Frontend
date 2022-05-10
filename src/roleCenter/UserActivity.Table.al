@@ -36,6 +36,12 @@ table 50100 UserActivity
             FieldClass = FlowField;
             CalcFormula = count(Item where("Item Category Code" = const('CHAIR')));
         }
+        field(6; "Total Quantity"; Decimal)
+        {
+            Caption = 'Total Quantity';
+            FieldClass = FlowField;
+            CalcFormula = sum("Cart Entry".Quantity);
+        }
     }
     keys
     {

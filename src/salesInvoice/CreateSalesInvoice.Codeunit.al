@@ -5,15 +5,15 @@ codeunit 50100 CreateSalesInvoice
 {
     trigger OnRun()
     var
+        CartEntry: Record "Cart Entry";
         SalesHeader: Record "Sales Header";
         LineNo: Integer;
     begin
         CreateSalesHeader(SalesHeader, "Sales Document Type"::Invoice, '01121212');
-
-        CreateSalesLine(SalesHeader, "Sales Line Type"::Item, '1000', 1, LineNo);
-        CreateSalesLine(SalesHeader, "Sales Line Type"::Item, '1001', 1, LineNo);
-        CreateSalesLine(SalesHeader, "Sales Line Type"::Resource, 'LIFT', 2, LineNo);
-
+        if CartEntry.FindSet() then
+            repeat
+                CreateSalesLine(SalesHeader, "Sales Line Type"::Item, CartEntry."Item No.", CartEntry.Quantity, LineNo);
+            until CartEntry.Next() = 0;
         OpenSalesDocument(SalesHeader);
     end;
 

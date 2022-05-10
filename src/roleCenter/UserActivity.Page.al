@@ -6,6 +6,7 @@ page 50101 UserActivity
     Caption = 'UserActivity';
     PageType = CardPart;
     SourceTable = UserActivity;
+    RefreshOnActivate = true;
 
     layout
     {
@@ -35,6 +36,14 @@ page 50101 UserActivity
                     {
                         ApplicationArea = All;
                         Caption = 'No. of Bikes';
+                        ToolTip = 'My Field 3';
+                        Image = Checklist;
+                        Style = Favorable;
+                    }
+                    field(Field4; Rec."Total Quantity")
+                    {
+                        ApplicationArea = All;
+
                         ToolTip = 'My Field 3';
                         Image = Checklist;
                         Style = Favorable;
@@ -76,10 +85,5 @@ page 50101 UserActivity
             Rec.Init();
             Rec.Insert(true);
         end;
-    end;
-
-    local procedure MyCueValue(): Integer
-    begin
-        exit(2);
     end;
 }
