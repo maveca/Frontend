@@ -4,14 +4,8 @@
 codeunit 50103 WSGetCompanies
 {
     trigger OnRun()
-    var
-        TempItem: Record Item temporary;
-        CompanyId: Text;
-        UrlLbl: Label '%1/companies(%2)/items', Comment = '%1: base url, %2: company id.';
     begin
-        CompanyId := GetCompanyId('CRONUS International Ltd.');
-        GetItems(StrSubstNo(UrlLbl, GetBaseURL(), CompanyId), TempItem);
-        Page.Run(0, TempItem);
+        Message(GetCompanyId('CRONUS International Ltd.'));
     end;
 
     local procedure AddDefaultHeaders(var HttpClient: HttpClient; UserName: Text; Password: Text)
@@ -27,12 +21,15 @@ codeunit 50103 WSGetCompanies
                 StrSubstNo(UserPwdTok, UserName, Password)));
     end;
 
-    local procedure GetBaseURL(): Text
+    procedure GetBaseURL(): Text
+    var
+        WebServiceSetup: Record "Web Service Setup";
     begin
-        exit('http://betsandbox.westeurope.cloudapp.azure.com:7048/E1/api/v2.0');
+        WebServiceSetup.Get();
+        exit(WebServiceSetup."Base Url");
     end;
 
-    local procedure GetFieldAsText(var JsonObject: JsonObject; FieldName: Text): Text
+    procedure GetFieldAsText(var JsonObject: JsonObject; FieldName: Text): Text
     var
         JsonToken: JsonToken;
         JsonValue: JsonValue;
@@ -42,7 +39,7 @@ codeunit 50103 WSGetCompanies
         exit(JsonValue.AsText());
     end;
 
-    local procedure GetFieldAsDecimal(var JsonObject: JsonObject; FieldName: Text): Decimal
+    procedure GetFieldAsDecimal(var JsonObject: JsonObject; FieldName: Text): Decimal
     var
         JsonToken: JsonToken;
         JsonValue: JsonValue;
@@ -52,7 +49,7 @@ codeunit 50103 WSGetCompanies
         exit(JsonValue.AsDecimal());
     end;
 
-    local procedure GetCompanyId(CompName: Text): Text
+    procedure GetCompanyId(CompName: Text): Text
     var
         TempCompany: Record Company temporary;
         JsonValueToken: JsonToken;
@@ -78,37 +75,17 @@ codeunit 50103 WSGetCompanies
         exit(TempCompany."Display Name");
     end;
 
-    local procedure GetItems(url: Text; var TempItem: Record Item temporary)
+    procedure ConnectToAPI(url: Text; var JsonValueToken: JsonToken)
     var
-        JsonValueToken: JsonToken;
-        JsonArrayItems: JsonArray;
-        JsonTokenItem: JsonToken;
-        JsonObjectItem: JsonObject;
-        i: integer;
-    begin
-        ConnectToAPI(url, JsonValueToken);
-        JsonArrayItems := JsonValueToken.AsArray();
-        for i := 0 to JsonArrayItems.Count() - 1 do begin
-            JsonArrayItems.Get(i, JsonTokenItem);
-            JsonObjectItem := JsonTokenItem.AsObject();
-
-            TempItem.Init();
-            TempItem."No." := CopyStr(GetFieldAsText(JsonObjectItem, 'number'), 1, 20);
-            TempItem.Description := CopyStr(GetFieldAsText(JsonObjectItem, 'displayName'), 1, 100);
-            TempItem."Unit Price" := GetFieldAsDecimal(JsonObjectItem, 'unitPrice');
-            TempItem.Insert();
-        end;
-    end;
-
-    local procedure ConnectToAPI(url: Text; var JsonValueToken: JsonToken)
-    var
+        WebServiceSetup: Record "Web Service Setup";
         HttpClient: HttpClient;
         HttpResponseMessage: HttpResponseMessage;
         HttpContent: HttpContent;
         OutputString: Text;
         JsonObjectDocument: JsonObject;
     begin
-        AddDefaultHeaders(HttpClient, 'STUDENT', 'Torek557!');
+        WebServiceSetup.Get();
+        AddDefaultHeaders(HttpClient, WebServiceSetup.UserName, WebServiceSetup.Password);
 
         if not HttpClient.Get(url, HttpResponseMessage) then
             Error('The url %1 cannot be accessed.', url);

@@ -75,8 +75,8 @@ page 50101 UserActivity
                     {
                         Image = TileCyan;
                         ToolTip = 'Call API';
-                        Caption = 'Get Companies';
-                        RunObject = Codeunit WSGetCompanies;
+                        Caption = 'Get Items';
+                        RunObject = Codeunit WSGetItems;
                     }
                 }
 
@@ -86,7 +86,7 @@ page 50101 UserActivity
 
     trigger OnOpenPage()
     begin
-        If not Rec.FindFirst() then begin
+        If not Rec.Get() then begin
             Rec.Init();
             Rec.Insert(true);
         end;
