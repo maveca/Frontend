@@ -5,6 +5,42 @@ codeunit 50103 WSGetCompanies
 {
     trigger OnRun()
     var
+        CompanyId: Text;
+    begin
+        CompanyId := GetCompanyId('CRONUS International Ltd.');
+        Message(CompanyId);
+    end;
+
+    local procedure AddDefaultHeaders(var HttpClient: HttpClient; UserName: Text; Password: Text)
+    var
+        Base64Convert: Codeunit "Base64 Convert";
+        HttpHeaders: HttpHeaders;
+        BasicTok: Label 'Basic ', Comment = '%1 = placeholder for username and password.';
+        UserPwdTok: Label '%1:%2', Comment = '%1 = Username, %2 = Password.';
+    begin
+        HttpHeaders := HttpClient.DefaultRequestHeaders();
+        HttpHeaders.Add('Authorization', BasicTok
+            + Base64Convert.ToBase64(
+                StrSubstNo(UserPwdTok, UserName, Password)));
+    end;
+
+    local procedure getBaseURL(): Text
+    begin
+        exit('http://betsandbox.westeurope.cloudapp.azure.com:7048/E1/api/v2.0');
+    end;
+
+    local procedure GetFieldAsText(var JsonObject: JsonObject; FieldName: Text): Text
+    var
+        JsonToken: JsonToken;
+        JsonValue: JsonValue;
+    begin
+        JsonObject.Get(FieldName, JsonToken);
+        JsonValue := JsonToken.AsValue();
+        exit(JsonValue.AsText());
+    end;
+
+    local procedure GetCompanyId(CompName: Text): Text
+    var
         TempCompany: Record Company temporary;
         url: Text;
         HttpClient: HttpClient;
@@ -16,11 +52,9 @@ codeunit 50103 WSGetCompanies
         JsonArrayCompanies: JsonArray;
         JsonTokenCompany: JsonToken;
         JsonObjectCompany: JsonObject;
-        JsonTokenCompanyId: JsonToken;
-        JsonValueCompanyId: JsonValue;
         i: integer;
     begin
-        url := 'http://betsandbox.westeurope.cloudapp.azure.com:7048/E1/api/v2.0/companies';
+        url := getBaseURL() + '/companies';
 
         AddDefaultHeaders(HttpClient, 'STUDENT', 'Torek557!');
 
@@ -44,29 +78,9 @@ codeunit 50103 WSGetCompanies
             TempCompany."Display Name" := CopyStr(GetFieldAsText(JsonObjectCompany, 'id'), 1, 250);
             TempCompany.Insert();
         end;
-        Page.Run(Page::"Companies", TempCompany);
-    end;
 
-    local procedure AddDefaultHeaders(var HttpClient: HttpClient; UserName: Text; Password: Text)
-    var
-        Base64Convert: Codeunit "Base64 Convert";
-        HttpHeaders: HttpHeaders;
-        BasicTok: Label 'Basic ', Comment = '%1 = placeholder for username and password.';
-        UserPwdTok: Label '%1:%2', Comment = '%1 = Username, %2 = Password.';
-    begin
-        HttpHeaders := HttpClient.DefaultRequestHeaders();
-        HttpHeaders.Add('Authorization', BasicTok
-            + Base64Convert.ToBase64(
-                StrSubstNo(UserPwdTok, UserName, Password)));
-    end;
-
-    local procedure GetFieldAsText(var JsonObject: JsonObject; FieldName: Text): Text
-    var
-        JsonToken: JsonToken;
-        JsonValue: JsonValue;
-    begin
-        JsonObject.Get(FieldName, JsonToken);
-        JsonValue := JsonToken.AsValue();
-        exit(JsonValue.AsText());
+        TempCompany.SetRange(Name, CompName);
+        TempCompany.FindFirst();
+        exit(TempCompany."Display Name");
     end;
 }
