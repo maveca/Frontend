@@ -16,8 +16,6 @@ codeunit 50103 WSGetCompanies
         JsonArrayCompanies: JsonArray;
         JsonTokenCompany: JsonToken;
         JsonObjectCompany: JsonObject;
-        JsonTokenCompanyName: JsonToken;
-        JsonValueCompanyName: JsonValue;
         JsonTokenCompanyId: JsonToken;
         JsonValueCompanyId: JsonValue;
         i: integer;
@@ -40,14 +38,10 @@ codeunit 50103 WSGetCompanies
         for i := 0 to JsonArrayCompanies.Count() - 1 do begin
             JsonArrayCompanies.Get(i, JsonTokenCompany);
             JsonObjectCompany := JsonTokenCompany.AsObject();
-            JsonObjectCompany.Get('name', JsonTokenCompanyName);
-            JsonValueCompanyName := JsonTokenCompanyName.AsValue();
-            JsonObjectCompany.Get('id', JsonTokenCompanyId);
-            JsonValueCompanyId := JsonTokenCompanyId.AsValue();
 
             TempCompany.Init();
-            TempCompany.Name := CopyStr(JsonValueCompanyName.AsText(), 1, 30);
-            TempCompany."Display Name" := CopyStr(JsonValueCompanyId.AsText(), 1, 250);
+            TempCompany."Name" := CopyStr(GetFieldAsText(JsonObjectCompany, 'name'), 1, 30);
+            TempCompany."Display Name" := CopyStr(GetFieldAsText(JsonObjectCompany, 'id'), 1, 250);
             TempCompany.Insert();
         end;
         Page.Run(Page::"Companies", TempCompany);
@@ -64,5 +58,15 @@ codeunit 50103 WSGetCompanies
         HttpHeaders.Add('Authorization', BasicTok
             + Base64Convert.ToBase64(
                 StrSubstNo(UserPwdTok, UserName, Password)));
+    end;
+
+    local procedure GetFieldAsText(var JsonObject: JsonObject; FieldName: Text): Text
+    var
+        JsonToken: JsonToken;
+        JsonValue: JsonValue;
+    begin
+        JsonObject.Get(FieldName, JsonToken);
+        JsonValue := JsonToken.AsValue();
+        exit(JsonValue.AsText());
     end;
 }
