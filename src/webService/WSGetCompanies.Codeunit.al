@@ -5,6 +5,7 @@ codeunit 50103 WSGetCompanies
 {
     trigger OnRun()
     var
+        TempCompany: Record Company temporary;
         url: Text;
         HttpClient: HttpClient;
         HttpResponseMessage: HttpResponseMessage;
@@ -17,6 +18,8 @@ codeunit 50103 WSGetCompanies
         JsonObjectCompany: JsonObject;
         JsonTokenCompanyName: JsonToken;
         JsonValueCompanyName: JsonValue;
+        JsonTokenCompanyId: JsonToken;
+        JsonValueCompanyId: JsonValue;
         i: integer;
     begin
         url := 'http://betsandbox.westeurope.cloudapp.azure.com:7048/E1/api/v2.0/companies';
@@ -39,8 +42,15 @@ codeunit 50103 WSGetCompanies
             JsonObjectCompany := JsonTokenCompany.AsObject();
             JsonObjectCompany.Get('name', JsonTokenCompanyName);
             JsonValueCompanyName := JsonTokenCompanyName.AsValue();
-            Message(JsonValueCompanyName.AsText());
+            JsonObjectCompany.Get('id', JsonTokenCompanyId);
+            JsonValueCompanyId := JsonTokenCompanyId.AsValue();
+
+            TempCompany.Init();
+            TempCompany.Name := CopyStr(JsonValueCompanyName.AsText(), 1, 30);
+            TempCompany."Display Name" := CopyStr(JsonValueCompanyId.AsText(), 1, 250);
+            TempCompany.Insert();
         end;
+        Page.Run(Page::"Companies", TempCompany);
     end;
 
     local procedure AddDefaultHeaders(var HttpClient: HttpClient; UserName: Text; Password: Text)
