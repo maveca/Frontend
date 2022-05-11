@@ -52,6 +52,7 @@ page 50101 UserActivity
             }
             cuegroup(Group2)
             {
+                Caption = 'Test Actions';
                 actions
                 {
 
@@ -67,7 +68,15 @@ page 50101 UserActivity
                     {
                         Image = TileYellow;
                         ToolTip = 'Yellow action';
+                        Caption = 'Payment';
                         RunObject = Codeunit Pay;
+                    }
+                    action(ActionAPI)
+                    {
+                        Image = TileCyan;
+                        ToolTip = 'Call API';
+                        Caption = 'Get Companies';
+                        RunObject = Codeunit WSGetCompanies;
                     }
                 }
 

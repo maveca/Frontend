@@ -19,14 +19,14 @@ codeunit 50101 "Add to Cart"
         Message('Item %1 is added to your cart', Rec.Description);
     end;
 
-    local procedure AddNewEntry(var Rec: Record Item)
+    local procedure AddNewEntry(var Item: Record Item)
     var
         CartEntry: Record "Cart Entry";
     begin
         CartEntry.Init();
         CartEntry."Entry No." := 0;
         CartEntry.Insert(true);
-        CartEntry.Validate("Item No.", Rec."No.");
+        CartEntry.Validate("Item No.", Item."No.");
         CartEntry.Modify(true);
     end;
 
