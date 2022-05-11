@@ -42,35 +42,26 @@ codeunit 50103 WSGetCompanies
         exit(JsonValue.AsText());
     end;
 
+    local procedure GetFieldAsDecimal(var JsonObject: JsonObject; FieldName: Text): Decimal
+    var
+        JsonToken: JsonToken;
+        JsonValue: JsonValue;
+    begin
+        JsonObject.Get(FieldName, JsonToken);
+        JsonValue := JsonToken.AsValue();
+        exit(JsonValue.AsDecimal());
+    end;
+
     local procedure GetCompanyId(CompName: Text): Text
     var
         TempCompany: Record Company temporary;
-        url: Text;
-        HttpClient: HttpClient;
-        HttpResponseMessage: HttpResponseMessage;
-        HttpContent: HttpContent;
-        OutputString: Text;
-        JsonObjectDocument: JsonObject;
         JsonValueToken: JsonToken;
         JsonArrayCompanies: JsonArray;
         JsonTokenCompany: JsonToken;
         JsonObjectCompany: JsonObject;
         i: integer;
     begin
-        url := GetBaseURL() + '/companies';
-
-        AddDefaultHeaders(HttpClient, 'STUDENT', 'Torek557!');
-
-        if not HttpClient.Get(url, HttpResponseMessage) then
-            Error('The url %1 cannot be accessed.', url);
-
-        if not (HttpResponseMessage.HttpStatusCode() = 200) then
-            Error('Web service returned error %1.', HttpResponseMessage.HttpStatusCode());
-
-        HttpContent := HttpResponseMessage.Content();
-        HttpContent.ReadAs(OutputString);
-        JsonObjectDocument.ReadFrom(OutputString);
-        JsonObjectDocument.Get('value', JsonValueToken);
+        ConnectToAPI(GetBaseURL() + '/companies', JsonValueToken);
         JsonArrayCompanies := JsonValueToken.AsArray();
         for i := 0 to JsonArrayCompanies.Count() - 1 do begin
             JsonArrayCompanies.Get(i, JsonTokenCompany);
@@ -89,16 +80,33 @@ codeunit 50103 WSGetCompanies
 
     local procedure GetItems(url: Text; var TempItem: Record Item temporary)
     var
+        JsonValueToken: JsonToken;
+        JsonArrayItems: JsonArray;
+        JsonTokenItem: JsonToken;
+        JsonObjectItem: JsonObject;
+        i: integer;
+    begin
+        ConnectToAPI(url, JsonValueToken);
+        JsonArrayItems := JsonValueToken.AsArray();
+        for i := 0 to JsonArrayItems.Count() - 1 do begin
+            JsonArrayItems.Get(i, JsonTokenItem);
+            JsonObjectItem := JsonTokenItem.AsObject();
+
+            TempItem.Init();
+            TempItem."No." := CopyStr(GetFieldAsText(JsonObjectItem, 'number'), 1, 20);
+            TempItem.Description := CopyStr(GetFieldAsText(JsonObjectItem, 'displayName'), 1, 100);
+            TempItem."Unit Price" := GetFieldAsDecimal(JsonObjectItem, 'unitPrice');
+            TempItem.Insert();
+        end;
+    end;
+
+    local procedure ConnectToAPI(url: Text; var JsonValueToken: JsonToken)
+    var
         HttpClient: HttpClient;
         HttpResponseMessage: HttpResponseMessage;
         HttpContent: HttpContent;
         OutputString: Text;
         JsonObjectDocument: JsonObject;
-        JsonValueToken: JsonToken;
-        JsonArrayCompanies: JsonArray;
-        JsonTokenCompany: JsonToken;
-        JsonObjectCompany: JsonObject;
-        i: integer;
     begin
         AddDefaultHeaders(HttpClient, 'STUDENT', 'Torek557!');
 
@@ -112,15 +120,5 @@ codeunit 50103 WSGetCompanies
         HttpContent.ReadAs(OutputString);
         JsonObjectDocument.ReadFrom(OutputString);
         JsonObjectDocument.Get('value', JsonValueToken);
-        JsonArrayCompanies := JsonValueToken.AsArray();
-        for i := 0 to JsonArrayCompanies.Count() - 1 do begin
-            JsonArrayCompanies.Get(i, JsonTokenCompany);
-            JsonObjectCompany := JsonTokenCompany.AsObject();
-
-            TempItem.Init();
-            TempItem."No." := CopyStr(GetFieldAsText(JsonObjectCompany, 'number'), 1, 20);
-            TempItem.Description := CopyStr(GetFieldAsText(JsonObjectCompany, 'displayName'), 1, 100);
-            TempItem.Insert();
-        end;
     end;
 }
