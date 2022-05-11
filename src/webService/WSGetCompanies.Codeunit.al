@@ -8,6 +8,16 @@ codeunit 50103 WSGetCompanies
         url: Text;
         HttpClient: HttpClient;
         HttpResponseMessage: HttpResponseMessage;
+        HttpContent: HttpContent;
+        OutputString: Text;
+        JsonObjectDocument: JsonObject;
+        JsonValueToken: JsonToken;
+        JsonArrayCompanies: JsonArray;
+        JsonTokenCompany: JsonToken;
+        JsonObjectCompany: JsonObject;
+        JsonTokenCompanyName: JsonToken;
+        JsonValueCompanyName: JsonValue;
+        i: integer;
     begin
         url := 'http://betsandbox.westeurope.cloudapp.azure.com:7048/E1/api/v2.0/companies';
 
@@ -19,7 +29,18 @@ codeunit 50103 WSGetCompanies
         if not (HttpResponseMessage.HttpStatusCode() = 200) then
             Error('Web service returned error %1.', HttpResponseMessage.HttpStatusCode());
 
-        Message('%1', HttpResponseMessage.HttpStatusCode);
+        HttpContent := HttpResponseMessage.Content();
+        HttpContent.ReadAs(OutputString);
+        JsonObjectDocument.ReadFrom(OutputString);
+        JsonObjectDocument.Get('value', JsonValueToken);
+        JsonArrayCompanies := JsonValueToken.AsArray();
+        for i := 0 to JsonArrayCompanies.Count() - 1 do begin
+            JsonArrayCompanies.Get(i, JsonTokenCompany);
+            JsonObjectCompany := JsonTokenCompany.AsObject();
+            JsonObjectCompany.Get('name', JsonTokenCompanyName);
+            JsonValueCompanyName := JsonTokenCompanyName.AsValue();
+            Message(JsonValueCompanyName.AsText());
+        end;
     end;
 
     local procedure AddDefaultHeaders(var HttpClient: HttpClient; UserName: Text; Password: Text)
