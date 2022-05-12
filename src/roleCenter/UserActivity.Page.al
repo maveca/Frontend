@@ -78,6 +78,13 @@ page 50101 UserActivity
                         Caption = 'Get Items';
                         RunObject = Codeunit WSGetItems;
                     }
+                    action(ActionAPIPost)
+                    {
+                        Image = TileGreen;
+                        ToolTip = 'Call API POST';
+                        Caption = 'Send Order';
+                        RunObject = Codeunit WSSendOrder;
+                    }
                 }
 
             }

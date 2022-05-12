@@ -8,7 +8,7 @@ codeunit 50104 WSGetItems
         TempItem: Record Item temporary;
         WSGetCompanies: Codeunit WSGetCompanies;
         CompanyId: Text;
-        UrlLbl: Label '%1/companies(%2)/items', Comment = '%1: base url, %2: company id.';
+        UrlLbl: Label '%1/companies(%2)/items?$filter=itemCategoryCode eq ''CHAIR'' and inventory ge 0', Comment = '%1: base url, %2: company id.';
     begin
         CompanyId := WSGetCompanies.GetCompanyId('CRONUS International Ltd.');
         GetItems(StrSubstNo(UrlLbl, WSGetCompanies.GetBaseURL(), CompanyId), TempItem);

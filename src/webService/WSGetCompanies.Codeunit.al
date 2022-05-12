@@ -124,4 +124,40 @@ codeunit 50103 WSGetCompanies
         JsonObjectDocument.ReadFrom(OutputString);
         JsonObjectDocument.Get('value', JsonValueToken);
     end;
+
+    /// <summary>
+    /// PostMethod.
+    /// </summary>
+    /// <param name="url">Text.</param>
+    /// <param name="content">Text.</param>
+    /// <param name="JsonObjectDocument">VAR JsonToken.</param>
+    procedure PostMethod(url: Text; content: Text; var JsonObjectDocument: JsonObject)
+    var
+        WebServiceSetup: Record "Web Service Setup";
+        HttpClient: HttpClient;
+        HttpResponseMessage: HttpResponseMessage;
+        HttpContent: HttpContent;
+        HttpHeaders: HttpHeaders;
+        OutputString: Text;
+    begin
+        WebServiceSetup.Get();
+        AddDefaultHeaders(HttpClient, WebServiceSetup.UserName, WebServiceSetup.Password);
+
+        HttpContent.WriteFrom(content);
+
+        HttpContent.GetHeaders(HttpHeaders);
+        HttpHeaders.Remove('Content-Type');
+        HttpHeaders.Add('Content-Type', 'application/json');
+
+        if not HttpClient.Post(url, HttpContent, HttpResponseMessage) then
+            Error('The url %1 cannot be accessed.', url);
+
+        if not (HttpResponseMessage.HttpStatusCode() in [200, 201]) then
+            Error('Web service returned error %1.', HttpResponseMessage.HttpStatusCode());
+
+        HttpContent := HttpResponseMessage.Content();
+        HttpContent.ReadAs(OutputString);
+        JsonObjectDocument.ReadFrom(OutputString);
+    end;
+
 }
