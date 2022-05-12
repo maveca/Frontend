@@ -21,6 +21,10 @@ codeunit 50103 WSGetCompanies
                 StrSubstNo(UserPwdTok, UserName, Password)));
     end;
 
+    /// <summary>
+    /// GetBaseURL.
+    /// </summary>
+    /// <returns>Return value of type Text.</returns>
     procedure GetBaseURL(): Text
     var
         WebServiceSetup: Record "Web Service Setup";
@@ -29,6 +33,12 @@ codeunit 50103 WSGetCompanies
         exit(WebServiceSetup."Base Url");
     end;
 
+    /// <summary>
+    /// GetFieldAsText.
+    /// </summary>
+    /// <param name="JsonObject">VAR JsonObject.</param>
+    /// <param name="FieldName">Text.</param>
+    /// <returns>Return value of type Text.</returns>
     procedure GetFieldAsText(var JsonObject: JsonObject; FieldName: Text): Text
     var
         JsonToken: JsonToken;
@@ -39,6 +49,12 @@ codeunit 50103 WSGetCompanies
         exit(JsonValue.AsText());
     end;
 
+    /// <summary>
+    /// GetFieldAsDecimal.
+    /// </summary>
+    /// <param name="JsonObject">VAR JsonObject.</param>
+    /// <param name="FieldName">Text.</param>
+    /// <returns>Return value of type Decimal.</returns>
     procedure GetFieldAsDecimal(var JsonObject: JsonObject; FieldName: Text): Decimal
     var
         JsonToken: JsonToken;
@@ -49,6 +65,11 @@ codeunit 50103 WSGetCompanies
         exit(JsonValue.AsDecimal());
     end;
 
+    /// <summary>
+    /// GetCompanyId.
+    /// </summary>
+    /// <param name="CompName">Text.</param>
+    /// <returns>Return value of type Text.</returns>
     procedure GetCompanyId(CompName: Text): Text
     var
         TempCompany: Record Company temporary;
@@ -75,6 +96,11 @@ codeunit 50103 WSGetCompanies
         exit(TempCompany."Display Name");
     end;
 
+    /// <summary>
+    /// ConnectToAPI.
+    /// </summary>
+    /// <param name="url">Text.</param>
+    /// <param name="JsonValueToken">VAR JsonToken.</param>
     procedure ConnectToAPI(url: Text; var JsonValueToken: JsonToken)
     var
         WebServiceSetup: Record "Web Service Setup";

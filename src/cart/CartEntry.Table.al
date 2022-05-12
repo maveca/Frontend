@@ -77,5 +77,9 @@ table 50101 "Cart Entry"
         {
             Clustered = true;
         }
+        key(Key2; "Item No.")
+        {
+            SumIndexFields = Quantity;
+        }
     }
 }

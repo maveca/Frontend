@@ -44,7 +44,7 @@ page 50105 "Web Service Setup"
         end;
     end;
 
-    local procedure GetBaseURL(): Text
+    local procedure GetBaseURL(): Text[250]
     begin
         exit('http://betsandbox.westeurope.cloudapp.azure.com:7048/E1/api/v2.0');
     end;
