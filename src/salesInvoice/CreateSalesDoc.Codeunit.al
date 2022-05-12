@@ -1,7 +1,7 @@
 /// <summary>
 /// Codeunit CreateSalesInvoice for creating new sales invoice.
 /// </summary>
-codeunit 50100 "Buy"
+codeunit 50100 "CreateSalesDoc"
 {
     trigger OnRun()
     var

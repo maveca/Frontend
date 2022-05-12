@@ -62,7 +62,7 @@ page 50103 "Cart Entries"
                 Promoted = true;
                 PromotedOnly = true;
                 PromotedCategory = Process;
-                RunObject = codeunit Buy;
+                RunObject = codeunit "WSSendOrder";
                 ToolTip = 'Executes the Buy action.';
             }
         }
