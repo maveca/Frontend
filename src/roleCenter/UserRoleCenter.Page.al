@@ -17,11 +17,7 @@ page 50100 UserRoleCenter
                 {
                     Caption = 'UserActivity';
                 }
-                part(CustomerListPart; CustomerListPart)
-                {
-                    Caption = 'Customer List Part';
-                    Provider = CustomerListPart2;
-                }
+
                 part(CustomerListPart2; CustomerListPart)
                 {
                     Caption = 'Customer List Part';
