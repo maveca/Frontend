@@ -10,6 +10,10 @@ page 50100 UserRoleCenter
     {
         area(RoleCenter)
         {
+            part(HeadlineRC; "Headline RC User")
+            {
+                ApplicationArea = All;
+            }
             group(MyGroup)
             {
                 Caption = 'RoleCenter Group';
