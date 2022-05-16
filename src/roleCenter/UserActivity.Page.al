@@ -14,6 +14,7 @@ page 50101 UserActivity
         {
             group(General)
             {
+                Caption = 'What if this is very very long text?';
                 cuegroup(Group)
                 {
                     Caption = 'Group Name';
@@ -49,6 +50,7 @@ page 50101 UserActivity
                         Style = Favorable;
                     }
                 }
+
             }
             cuegroup(Group2)
             {
@@ -81,9 +83,26 @@ page 50101 UserActivity
                     action(ActionAPIPost)
                     {
                         Image = TileGreen;
-                        ToolTip = 'Call API POST';
-                        Caption = 'Send Order';
-                        RunObject = Codeunit WSSendOrder;
+                        ToolTip = 'Demonstrate Password';
+                        Caption = 'Password';
+                        RunObject = Codeunit Password;
+                    }
+
+                    action(LoginAction)
+                    {
+                        Image = TileRed;
+                        ToolTip = 'Login as a User';
+                        Caption = 'Login';
+
+                        trigger OnAction()
+                        var
+                            TempLogin: Record Login temporary;
+                        begin
+                            TempLogin.Init();
+                            TempLogin.Insert(true);
+                            if Page.RunModal(Page::"Login User", TempLogin) = Action::Cancel then
+                                Error('Login has been canceled by user.')
+                        end;
                     }
                 }
 

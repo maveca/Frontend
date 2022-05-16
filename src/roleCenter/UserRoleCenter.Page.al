@@ -26,6 +26,10 @@ page 50100 UserRoleCenter
                 {
                     Caption = 'Customer List Part';
                 }
+                part(LoginPart; "Login Info")
+                {
+                    Caption = 'Login Info';
+                }
             }
         }
     }
