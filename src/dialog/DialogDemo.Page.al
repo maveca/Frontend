@@ -16,9 +16,11 @@ page 50112 DialogDemo
                 Caption = 'Question';
                 ToolTip = 'Specifies the value of the Question field.';
             }
-            field(GroupName; 'asdfasdfkačs dfčak sdčlfkačsdkfčaskdf časdkf asdfasdfkačs dfčak sdčlfkačsdkfčaskdf časdkf asdfasdfkačs dfčak sdčlfkačsdkfčaskdf časdkf')
+            field(GroupName; 'This is very very long text. How does that work for you?')
             {
+
                 Caption = 'Addition Text';
+                ToolTip = 'Specifies the value of the Addition Text field.';
             }
         }
     }

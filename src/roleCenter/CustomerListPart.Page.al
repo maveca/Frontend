@@ -46,12 +46,14 @@ page 50102 CustomerListPart
             action(Filter)
             {
                 ApplicationArea = All;
+                ToolTip = 'Executes the Filter action.';
+                Image = Filter;
 
                 trigger OnAction()
                 var
                     DialogDemo: Page DialogDemo;
                 begin
-                    DialogDemo.SetField1('Defailt');
+                    DialogDemo.SetField1('Default');
                     if DialogDemo.RunModal() = Action::Yes then
                         Message(DialogDemo.GetField1());
                 end;

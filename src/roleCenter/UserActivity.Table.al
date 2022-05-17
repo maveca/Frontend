@@ -36,7 +36,9 @@ table 50100 UserActivity
             FieldClass = FlowField;
             CalcFormula = count(Item where("Item Category Code" = const('CHAIR')));
         }
+#pragma warning disable AA0232
         field(6; "Total Quantity"; Decimal)
+#pragma warning restore AA0232
         {
             Caption = 'Total Quantity';
             FieldClass = FlowField;

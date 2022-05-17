@@ -1,3 +1,6 @@
+/// <summary>
+/// PageExtension Item List Ext (ID 50101) extends Record Item List.
+/// </summary>
 pageextension 50101 "Item List Ext" extends "Item List"
 {
     actions
@@ -7,6 +10,8 @@ pageextension 50101 "Item List Ext" extends "Item List"
             action(GetSelection)
             {
                 ApplicationArea = All;
+                ToolTip = 'Executes the GetSelection action.';
+                Image = Select;
 
                 trigger OnAction()
                 var

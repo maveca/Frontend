@@ -22,12 +22,20 @@ page 50106 "Headline RC User"
                 field(GreetingText2; GetHeadingText2())
                 {
                     ApplicationArea = All;
-                    Caption = 'Reklama';
+                    Caption = 'Heading with Link';
                     Editable = true;
+
+                    trigger OnDrillDown()
+                    var
+                        DrillDownURLTxt: Label 'https://go.microsoft.com/fwlink/?linkid=867580', Locked = True;
+                    begin
+                        Hyperlink(DrillDownURLTxt)
+                    end;
                 }
             }
         }
     }
+
 
     trigger OnOpenPage()
     begin
@@ -36,12 +44,12 @@ page 50106 "Headline RC User"
 
     local procedure GetHeadingText(): Text
     begin
-        Exit('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
+        Exit('The longer the text message is (the more SMS parts there are), the more it costs. Standard Character Set. The maximum message length is 918 characters.');
     end;
 
     local procedure GetHeadingText2(): Text
     begin
-        Exit('Blabla sdfasfdasdf asdfa sdf asdfasdfasfd.');
+        Exit('<qualifier>Title</qualifier><payload>This is the <emphasize>Headline</emphasize>.</payload>');
     end;
 
     var
