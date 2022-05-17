@@ -28,9 +28,8 @@ page 50113 "Resource Event Matrix"
                 /////////////////////////////////////////////////////////////////////////////////
                 field(Day1; dayQuantity[1])
                 {
-                    Caption = '1';
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the 1 field.';
+                    ToolTip = 'Specifies the value of the cell.';
                     BlankZero = true;
                     StyleExpr = day1SourceExp;
                     CaptionClass = '1,5,,' + DayCaption01;
@@ -39,12 +38,16 @@ page 50113 "Resource Event Matrix"
                     begin
                         InsertResourceEvent(1);
                     end;
+
+                    trigger OnDrillDown()
+                    begin
+                        DayDrillDown(1);
+                    end;
                 }
                 field(Day2; dayQuantity[2])
                 {
-                    Caption = '2';
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the 2 field.';
+                    ToolTip = 'Specifies the value of the cell.';
                     BlankZero = true;
                     StyleExpr = day2SourceExp;
                     CaptionClass = '1,5,,' + DayCaption02;
@@ -53,12 +56,16 @@ page 50113 "Resource Event Matrix"
                     begin
                         InsertResourceEvent(2);
                     end;
+
+                    trigger OnDrillDown()
+                    begin
+                        DayDrillDown(2);
+                    end;
                 }
                 field(Day3; dayQuantity[3])
                 {
-                    Caption = '3';
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the 3 field.';
+                    ToolTip = 'Specifies the value of the cell.';
                     BlankZero = true;
                     StyleExpr = day3SourceExp;
                     CaptionClass = '1,5,,' + DayCaption03;
@@ -66,6 +73,19 @@ page 50113 "Resource Event Matrix"
                     trigger OnValidate()
                     begin
                         InsertResourceEvent(3);
+                    end;
+                }
+                field(Day4; dayQuantity[4])
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the cell.';
+                    BlankZero = true;
+                    StyleExpr = day4SourceExp;
+                    CaptionClass = '1,5,,' + DayCaption04;
+
+                    trigger OnValidate()
+                    begin
+                        InsertResourceEvent(4);
                     end;
                 }
             }
@@ -89,8 +109,8 @@ page 50113 "Resource Event Matrix"
 
     var
         dayQuantity: array[31] of Decimal;
-        day1SourceExp, day2SourceExp, day3SourceExp : Text;
-        DayCaption01, DayCaption02, DayCaption03 : Text;
+        day1SourceExp, day2SourceExp, day3SourceExp, day4SourceExp : Text;
+        DayCaption01, DayCaption02, DayCaption03, DayCaption04 : Text;
 
     local procedure GetDay(day: Integer): Decimal
     var
@@ -101,6 +121,16 @@ page 50113 "Resource Event Matrix"
         ResourceEvent.CalcSums(Quantity);
         exit(ResourceEvent.Quantity);
     end;
+
+    local procedure DayDrillDown(day: Integer)
+    var
+        ResourceEvent: Record "Resource Event";
+    begin
+        ResourceEvent.SetRange("Resource No.", Rec."No.");
+        ResourceEvent.SetRange("Posting Date", DMY2Date(day, Date2DMY(Today(), 2), Date2DMY(Today(), 3)));
+        Page.Run(Page::"Resource Events", ResourceEvent);
+    end;
+
 
     local procedure InsertResourceEvent(day: Integer)
     var
@@ -139,6 +169,7 @@ page 50113 "Resource Event Matrix"
         day1SourceExp := GetStyleExpr(1);
         day2SourceExp := GetStyleExpr(2);
         day3SourceExp := GetStyleExpr(3);
+        day4SourceExp := GetStyleExpr(4);
     end;
 
     local procedure SetColumnCaption()
@@ -149,6 +180,7 @@ page 50113 "Resource Event Matrix"
         DayCaption01 := format(1) + newLine + GetDayName(DMY2Date(1, Date2DMY(Today(), 2), Date2DMY(Today(), 3)));
         DayCaption02 := format(2) + newLine + GetDayName(DMY2Date(2, Date2DMY(Today(), 2), Date2DMY(Today(), 3)));
         DayCaption03 := format(3) + newLine + GetDayName(DMY2Date(3, Date2DMY(Today(), 2), Date2DMY(Today(), 3)));
+        DayCaption04 := format(4) + newLine + GetDayName(DMY2Date(4, Date2DMY(Today(), 2), Date2DMY(Today(), 3)));
     end;
 
     local procedure GetDayName(day: Date): Text
