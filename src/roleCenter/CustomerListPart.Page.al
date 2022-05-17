@@ -38,4 +38,24 @@ page 50102 CustomerListPart
             }
         }
     }
+
+    actions
+    {
+        area(Processing)
+        {
+            action(Filter)
+            {
+                ApplicationArea = All;
+
+                trigger OnAction()
+                var
+                    DialogDemo: Page DialogDemo;
+                begin
+                    DialogDemo.SetField1('Defailt');
+                    if DialogDemo.RunModal() = Action::Yes then
+                        Message(DialogDemo.GetField1());
+                end;
+            }
+        }
+    }
 }
