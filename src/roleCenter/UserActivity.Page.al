@@ -15,39 +15,48 @@ page 50101 UserActivity
             group(General)
             {
                 Caption = 'What if this is very very long text?';
+
+                cuegroup(Totals)
+                {
+                    CuegroupLayout = Wide;
+                    field(TotalAmount; Rec."Total Amount")
+                    {
+                        ApplicationArea = All;
+                        ToolTip = 'Specifies the value of the Total Amount field.';
+                    }
+                }
                 cuegroup(Group)
                 {
-                    Caption = 'Group Name';
+                    ShowCaption = false;
                     field(Field1; Rec."No. of Cart Entries")
                     {
                         ApplicationArea = All;
-                        ToolTip = 'No. of Cart Entries';
                         Image = Checklist;
                         Style = Favorable;
+                        ToolTip = 'Specifies the value of the No. of Cart Entries field.';
                     }
                     field(Field2; Rec."No . of Chairs")
                     {
                         ApplicationArea = All;
                         Caption = 'No. of Chairs';
-                        ToolTip = 'My Field 2';
                         Image = Checklist;
                         Style = Favorable;
+                        ToolTip = 'Specifies the value of the No. of Chairs field.';
                     }
                     field(Field3; Rec."No . of Bikes")
                     {
                         ApplicationArea = All;
                         Caption = 'No. of Bikes';
-                        ToolTip = 'My Field 3';
                         Image = Checklist;
                         Style = Favorable;
+                        ToolTip = 'Specifies the value of the No. of Bikes field.';
                     }
                     field(Field4; Rec."Total Quantity")
                     {
                         ApplicationArea = All;
-
-                        ToolTip = 'My Field 3';
                         Image = Checklist;
                         Style = Favorable;
+                        ToolTip = 'Total Quantity from Cart';
                     }
                 }
 

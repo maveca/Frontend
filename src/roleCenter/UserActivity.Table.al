@@ -44,6 +44,12 @@ table 50100 UserActivity
             FieldClass = FlowField;
             CalcFormula = sum("Cart Entry".Quantity);
         }
+        field(7; "Total Amount"; Decimal)
+        {
+            Caption = 'Total Amount';
+            FieldClass = FlowField;
+            CalcFormula = sum("Cart Entry".Amount);
+        }
     }
     keys
     {
