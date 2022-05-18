@@ -26,7 +26,7 @@ table 50103 Login
         }
         field(2; Member; Boolean)
         {
-            Caption = 'Member';
+            Caption = 'Shop Member';
             DataClassification = CustomerContent;
         }
         field(3; "Mail"; Text[100])
@@ -37,6 +37,16 @@ table 50103 Login
         field(5; Password; Text[100])
         {
             Caption = 'Password';
+            DataClassification = EndUserIdentifiableInformation;
+        }
+        field(6; Admin; Boolean)
+        {
+            Caption = 'Administrator';
+            DataClassification = AccountData;
+        }
+        field(7; Name; Text[100])
+        {
+            Caption = 'Name';
             DataClassification = EndUserIdentifiableInformation;
         }
     }

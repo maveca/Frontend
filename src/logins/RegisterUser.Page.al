@@ -4,10 +4,10 @@
 page 50107 "Register User"
 {
     Caption = 'Register User';
-    PageType = Card;
+    PageType = StandardDialog;
     SourceTable = Login;
-    ApplicationArea = All;
-    UsageCategory = Lists;
+    ShowFilter = false;
+    DataCaptionExpression = Rec.Name;
 
     layout
     {
@@ -15,6 +15,22 @@ page 50107 "Register User"
         {
             group(General)
             {
+                Caption = 'General';
+                field(Name; Rec.Name)
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Name field.';
+                }
+                field(Mail; Rec.Mail)
+                {
+                    ToolTip = 'Specifies the value of the E-mail field.';
+                    ApplicationArea = All;
+                }
+            }
+            group(Login)
+            {
+                Caption = 'Login';
+                Editable = IsLookupPage;
                 field("User Name"; Rec."User Name")
                 {
                     ToolTip = 'Specifies the value of the User Name field.';
@@ -29,30 +45,49 @@ page 50107 "Register User"
             }
             group(Setup)
             {
-                field(Mail; Rec.Mail)
+                Visible = IsAdmin;
+                field(Member; Rec.Member)
                 {
-                    ToolTip = 'Specifies the value of the E-mail field.';
                     ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Shop Member property.';
+                }
+                field(Admin; Rec.Admin)
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Administrator property.';
                 }
             }
         }
     }
 
     trigger OnOpenPage()
+    var
+        LoginManagement: Codeunit "Login Management";
     begin
-        Rec.Init();
+        IsLookupPage := CurrPage.LookupMode();
+        IsAdmin := LoginManagement.GetCurrentLogin().Admin;
     end;
 
     trigger OnQueryClosePage(CloseAction: Action): Boolean
     var
-        PasswordCodeunit: Codeunit Password;
+        LoginManagement: Codeunit "Login Management";
+    begin
+        if CurrPage.LookupMode() then begin
+            TestData();
+            LoginManagement.StorePassword(Rec."User Name", Rec.Password);
+            Rec.Password := '';
+        end;
+    end;
+
+    local procedure TestData()
     begin
         Rec.TestField("User Name");
         Rec.TestField(Password);
         if StrLen(Rec.Password) < 5 then
             Error('Your password must be at least 5 characters long.');
-        PasswordCodeunit.StorePassword(Rec."User Name", Rec.Password);
-        Rec.Password := '';
-        Rec.Modify(true);
     end;
+
+    var
+        IsLookupPage: Boolean;
+        IsAdmin: Boolean;
 }

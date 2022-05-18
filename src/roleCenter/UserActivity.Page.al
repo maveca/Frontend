@@ -28,7 +28,7 @@ page 50101 UserActivity
                 cuegroup(Group)
                 {
                     ShowCaption = false;
-                    // Visible = IsVisibleForTeacher;
+                    Visible = IsAdmin;
                     field(Field1; Rec."No. of Cart Entries")
                     {
                         ApplicationArea = All;
@@ -95,7 +95,7 @@ page 50101 UserActivity
                         Image = TileGreen;
                         ToolTip = 'Demonstrate Password';
                         Caption = 'Password';
-                        RunObject = Codeunit Password;
+                        RunObject = Codeunit "Login Management";
                     }
 
                     action(LoginAction)
@@ -121,10 +121,8 @@ page 50101 UserActivity
     }
 
     trigger OnOpenPage()
-    var
-        PasswordCodeunit: Codeunit Password;
     begin
-        If not Rec.Get(PasswordCodeunit.GetCurrentUser()) then begin
+        If not Rec.Get() then begin
             Rec.Init();
             Rec.Insert(true);
         end;
@@ -132,16 +130,16 @@ page 50101 UserActivity
 
     trigger OnAfterGetCurrRecord()
     begin
-        IsVisibleForTeacher := IsTeacher();
+        IsAdmin := IsAdministrator();
     end;
 
-    local procedure IsTeacher(): Boolean
+    local procedure IsAdministrator(): Boolean
     var
-        PasswordCodeunit: Codeunit Password;
+        LoginManagement: Codeunit "Login Management";
     begin
-        exit(PasswordCodeunit.GetCurrentUser() = 'mina');
+        exit(LoginManagement.GetCurrentLogin().Admin);
     end;
 
     var
-        IsVisibleForTeacher: Boolean;
+        IsAdmin: Boolean;
 }

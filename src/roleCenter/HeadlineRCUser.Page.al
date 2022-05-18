@@ -28,7 +28,7 @@ page 50106 "Headline RC User"
 
                     trigger OnDrillDown()
                     var
-                        DrillDownURLTxt: Label 'https://go.microsoft.com/fwlink/?linkid=867580', Locked = True;
+                        DrillDownURLTxt: Label 'https://betsandbox.westeurope.cloudapp.azure.com/E1/', Locked = True;
                     begin
                         Hyperlink(DrillDownURLTxt)
                     end;
@@ -45,14 +45,19 @@ page 50106 "Headline RC User"
 
     local procedure GetHeadingText(): Text
     var
-        PasswordCodeunit: Codeunit Password;
+        LoginManagement: Codeunit "Login Management";
+        FrontLbl: Label '<qualifier>Frontend</qualifier><payload>Hello dear <emphasize>%1</emphasize>, welcome to our shop.</payload>', Comment = '%1 = Username';
+        BackLbl: Label '<qualifier>Frontend</qualifier><payload>Please login or register as user.</payload>';
     begin
-        Exit(StrSubstNo('Hello dear %1', PasswordCodeunit.GetCurrentUser()));
+        if LoginManagement.GetCurrentUser() = '' then
+            exit(BackLbl)
+        else
+            exit(StrSubstNo(FrontLbl, LoginManagement.GetCurrentLogin().Name));
     end;
 
     local procedure GetHeadingText2(): Text
     begin
-        Exit('<qualifier>Title</qualifier><payload>This is the <emphasize>Headline</emphasize>.</payload>');
+        Exit('<qualifier>Backend</qualifier><payload>Open backend of <emphasize>Business Central</emphasize>.</payload>');
     end;
 
     var

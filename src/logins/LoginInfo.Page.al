@@ -5,7 +5,8 @@ page 50110 "Login Info"
 {
     Caption = 'Login Info';
     PageType = CardPart;
-    SourceTable = Login;
+    Editable = false;
+    RefreshOnActivate = true;
 
     layout
     {
@@ -13,13 +14,12 @@ page 50110 "Login Info"
         {
             group(General)
             {
-                Caption = 'Please write some text that we will have better Card Part.';
-                field("User Name"; Rec."User Name")
+                ShowCaption = false;
+                field("Name"; LoginManagement.GetCurrentLogin().Name)
                 {
-                    Caption = 'User';
+                    ShowCaption = false;
                     ToolTip = 'Specifies the value of the User Name field.';
                     ApplicationArea = All;
-                    Width = 50;
                 }
             }
         }
@@ -41,14 +41,12 @@ page 50110 "Login Info"
                 trigger OnAction()
                 var
                     TempLogin: Record Login temporary;
-                    PasswordCodeunit: Codeunit Password;
+                    LoginMgt: Codeunit "Login Management";
                 begin
                     TempLogin.Init();
                     TempLogin.Insert(true);
-                    if Page.RunModal(Page::"Login User", TempLogin) = Action::Ok then begin
-                        PasswordCodeunit.SetCurrentUser(TempLogin."User Name");
-                        Rec.SetUser(TempLogin."User Name");
-                    end;
+                    if Page.RunModal(Page::"Login User", TempLogin) = Action::LookupOk then
+                        LoginMgt.SetCurrentUser(TempLogin."User Name");
                 end;
             }
             action(LogOut)
@@ -62,38 +60,58 @@ page 50110 "Login Info"
 
                 trigger OnAction()
                 var
-                    PasswordCodeunit: Codeunit "Password";
+                    PasswordCodeunit: Codeunit "Login Management";
                 begin
                     PasswordCodeunit.SetCurrentUser('');
-                    Rec.SetUser('');
                 end;
             }
-
             action(RegisterNewUser)
             {
                 ApplicationArea = All;
-                Caption = 'Register New User';
+                Caption = 'Register as New User';
                 Promoted = true;
                 PromotedOnly = true;
                 Image = NewCustomer;
                 ToolTip = 'Executes the Register New User action.';
 
                 trigger OnAction()
+                var
+                    TempLogin: Record Login temporary;
+                    Login: Record Login;
                 begin
-                    Rec.Init();
-                    Page.RunModal(Page::"Register User", Rec);
+                    TempLogin.Init();
+                    TempLogin.Insert();
+                    if Page.RunModal(Page::"Register User", TempLogin) = Action::LookupOK then begin
+                        Login.Init();
+                        Login.TransferFields(TempLogin);
+                        Login.Insert(true);
+                    end;
                 end;
+            }
+            group(Admin)
+            {
+                Caption = 'Administrator';
+                Enabled = IsAdmin;
+
+                action(UserList)
+                {
+                    Caption = 'User List';
+                    ApplicationArea = All;
+                    RunObject = Page "Login List";
+                    ToolTip = 'Executes the User List action.';
+                    Image = List;
+                    Visible = IsAdmin;
+                }
             }
         }
     }
 
-    trigger OnOpenPage()
-    var
-        Password: Codeunit Password;
+    trigger OnAfterGetCurrRecord()
     begin
-        if not Rec.SetUser(Password.GetCurrentUser()) then begin
-            Rec.Init();
-            Rec.Insert();
-        end;
+        IsAdmin := LoginManagement.GetCurrentLogin().Admin;
     end;
+
+    var
+        LoginManagement: Codeunit "Login Management";
+        IsAdmin: Boolean;
 }

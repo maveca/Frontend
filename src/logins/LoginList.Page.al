@@ -6,6 +6,7 @@ page 50108 "Login List"
     ApplicationArea = All;
     Caption = 'Login List';
     PageType = List;
+    Editable = false;
     SourceTable = Login;
     UsageCategory = Administration;
     CardPageId = "Register User";
@@ -16,10 +17,11 @@ page 50108 "Login List"
         {
             repeater(General)
             {
-                field(Id; Rec.Id)
+                field(Name; Rec.Name)
                 {
-                    ToolTip = 'Specifies the value of the Id field.';
                     ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Name field.';
+
                 }
                 field("User Name"; Rec."User Name")
                 {
@@ -36,12 +38,11 @@ page 50108 "Login List"
                     ToolTip = 'Specifies the value of the Member field.';
                     ApplicationArea = All;
                 }
-                field(Password; Rec.Password)
+                field(Admin; Rec.Admin)
                 {
-                    ToolTip = 'Specifies the value of the Password field.';
                     ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Administrator property.';
                 }
-
             }
         }
     }

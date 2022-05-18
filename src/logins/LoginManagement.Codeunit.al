@@ -1,7 +1,7 @@
 /// <summary>
 /// Codeunit Password (ID 50106).
 /// </summary>
-codeunit 50106 Password
+codeunit 50106 "Login Management"
 {
     SingleInstance = true;
 
@@ -65,6 +65,18 @@ codeunit 50106 Password
     begin
         exit(CurrentUser);
     end;
+
+    /// <summary>
+    /// GetCurrentLogin.
+    /// </summary>
+    /// <returns>Return variable Login of type Record Login.</returns>
+    procedure GetCurrentLogin() Login: Record Login;
+    begin
+        Login.SetRange("User Name", CurrentUser);
+        if not Login.FindFirst() then
+            Clear(Login);
+    end;
+
 
     /// <summary>
     /// SetCurrentUser.
