@@ -31,12 +31,11 @@ page 50109 "Login User"
         }
     }
 
-    trigger OnQueryClosePage(CloseAction: Action): Boolean;
+    trigger OnQueryClosePage(CloseAction: Action): Boolean
     var
-
         PasswordCodeunit: Codeunit Password;
     begin
-        if CloseAction = Action::Cancel then
+        if CloseAction = Action::LookupCancel then
             exit(true);
 
         if not PasswordCodeunit.CheckPassword(Rec."User Name", Rec.Password) then

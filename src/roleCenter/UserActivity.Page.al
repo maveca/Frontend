@@ -28,7 +28,7 @@ page 50101 UserActivity
                 cuegroup(Group)
                 {
                     ShowCaption = false;
-                    Visible = IsVisibleForTeacher;
+                    // Visible = IsVisibleForTeacher;
                     field(Field1; Rec."No. of Cart Entries")
                     {
                         ApplicationArea = All;

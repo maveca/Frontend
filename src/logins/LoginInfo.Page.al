@@ -45,9 +45,7 @@ page 50110 "Login Info"
                 begin
                     TempLogin.Init();
                     TempLogin.Insert(true);
-                    if Page.RunModal(Page::"Login User", TempLogin) = Action::Cancel then
-                        Error('Login has been canceled by user.')
-                    else begin
+                    if Page.RunModal(Page::"Login User", TempLogin) = Action::Ok then begin
                         PasswordCodeunit.SetCurrentUser(TempLogin."User Name");
                         Rec.SetUser(TempLogin."User Name");
                     end;
