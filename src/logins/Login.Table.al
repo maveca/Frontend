@@ -49,6 +49,21 @@ table 50103 Login
             Caption = 'Name';
             DataClassification = EndUserIdentifiableInformation;
         }
+
+#pragma warning disable AA0232
+        field(10; "Total Quantity"; Decimal)
+#pragma warning restore AA0232
+        {
+            Caption = 'Total Quantity';
+            FieldClass = FlowField;
+            CalcFormula = sum("Cart Entry".Quantity where("User Name" = field("User Name")));
+        }
+        field(11; "Total Amount"; Decimal)
+        {
+            Caption = 'Total Amount';
+            FieldClass = FlowField;
+            CalcFormula = sum("Cart Entry".Amount where("User Name" = field("User Name")));
+        }
     }
     keys
     {

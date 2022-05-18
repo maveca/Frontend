@@ -61,7 +61,7 @@ codeunit 50106 "Login Management"
     /// GetCurrentUser.
     /// </summary>
     /// <returns>Return value of type Text.</returns>
-    procedure GetCurrentUser(): Text;
+    procedure GetCurrentUser(): Text[250];
     begin
         exit(CurrentUser);
     end;
@@ -82,11 +82,11 @@ codeunit 50106 "Login Management"
     /// SetCurrentUser.
     /// </summary>
     /// <param name="NewUser">Text.</param>
-    procedure SetCurrentUser(NewUser: Text);
+    procedure SetCurrentUser(NewUser: Text[250]);
     begin
         CurrentUser := NewUser;
     end;
 
     var
-        CurrentUser: Text;
+        CurrentUser: Text[250];
 }

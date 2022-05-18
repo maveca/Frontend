@@ -1,3 +1,6 @@
+/// <summary>
+/// Page Cart Factbox (ID 50104).
+/// </summary>
 page 50104 "Cart Factbox"
 {
     Caption = 'Cart Factbox';

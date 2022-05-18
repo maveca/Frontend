@@ -70,6 +70,12 @@ table 50101 "Cart Entry"
                 Amount := Quantity * Price;
             end;
         }
+        field(7; "User Name"; Text[250])
+        {
+            Caption = 'User Name';
+            DataClassification = EndUserIdentifiableInformation;
+            Editable = false;
+        }
     }
     keys
     {
@@ -82,4 +88,12 @@ table 50101 "Cart Entry"
             SumIndexFields = Quantity;
         }
     }
+
+    trigger OnInsert()
+    var
+        LoginManagement: Codeunit "Login Management";
+    begin
+        Rec."User Name" := LoginManagement.GetCurrentUser();
+
+    end;
 }

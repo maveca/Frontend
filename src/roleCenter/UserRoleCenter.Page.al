@@ -14,29 +14,27 @@ page 50100 UserRoleCenter
             {
                 ApplicationArea = All;
             }
-            group(MyGroup)
+            group(Insights)
             {
-                Caption = 'RoleCenter Group';
-                part(UserActivity; UserActivity)
-                {
-                    Caption = 'UserActivity';
-                }
+                part(UserActivity; UserActivity) { }
+
 
                 part(ResourcePart; "Resource Picture")
                 {
                     SubPageLink = "No." = const('LINA');
                 }
+                part(DeveloperActivity; DeveloperActivity) { }
 
-                part(CustomerListPart2; CustomerListPart)
+                group(User)
                 {
-                    Caption = 'Customer List Part';
-                }
-            }
-            group(Right)
-            {
-                part(LoginPart; "Login Info")
-                {
-                    Caption = 'Login Info';
+                    group(a1)
+                    {
+                        part(LoginActivity; "LoginActivity") { }
+                    }
+                    group(a2)
+                    {
+                        part(LoginPart; "Login Info") { }
+                    }
                 }
             }
         }
