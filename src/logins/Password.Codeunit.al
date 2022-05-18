@@ -56,4 +56,25 @@ codeunit 50106 Password
 
         exit(GetPassword(User) = Pwd);
     end;
+
+    /// <summary>
+    /// GetCurrentUser.
+    /// </summary>
+    /// <returns>Return value of type Text.</returns>
+    procedure GetCurrentUser(): Text;
+    begin
+        exit(CurrentUser);
+    end;
+
+    /// <summary>
+    /// SetCurrentUser.
+    /// </summary>
+    /// <param name="NewUser">Text.</param>
+    procedure SetCurrentUser(NewUser: Text);
+    begin
+        CurrentUser := NewUser;
+    end;
+
+    var
+        CurrentUser: Text;
 }

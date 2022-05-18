@@ -5,6 +5,7 @@ page 50106 "Headline RC User"
 {
     Caption = 'Headline RC User';
     PageType = HeadlinePart;
+    RefreshOnActivate = true;
 
     layout
     {
@@ -43,8 +44,10 @@ page 50106 "Headline RC User"
     end;
 
     local procedure GetHeadingText(): Text
+    var
+        PasswordCodeunit: Codeunit Password;
     begin
-        Exit('The longer the text message is (the more SMS parts there are), the more it costs. Standard Character Set. The maximum message length is 918 characters.');
+        Exit(StrSubstNo('Hello dear %1', PasswordCodeunit.GetCurrentUser()));
     end;
 
     local procedure GetHeadingText2(): Text

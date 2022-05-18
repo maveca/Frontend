@@ -47,4 +47,15 @@ table 50103 Login
             Clustered = true;
         }
     }
+
+    /// <summary>
+    /// SetUser.
+    /// </summary>
+    /// <param name="UserName">Text.</param>
+    /// <returns>Return value of type Boolean.</returns>
+    procedure SetUser(UserName: Text): Boolean
+    begin
+        SetRange("User Name", UserName);
+        exit(FindFirst());
+    end;
 }

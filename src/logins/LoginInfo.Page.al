@@ -41,11 +41,16 @@ page 50110 "Login Info"
                 trigger OnAction()
                 var
                     TempLogin: Record Login temporary;
+                    PasswordCodeunit: Codeunit Password;
                 begin
                     TempLogin.Init();
                     TempLogin.Insert(true);
                     if Page.RunModal(Page::"Login User", TempLogin) = Action::Cancel then
                         Error('Login has been canceled by user.')
+                    else begin
+                        PasswordCodeunit.SetCurrentUser(TempLogin."User Name");
+                        Rec.SetUser(TempLogin."User Name");
+                    end;
                 end;
             }
             action(LogOut)
@@ -58,8 +63,11 @@ page 50110 "Login Info"
                 ToolTip = 'Executes the LogOut action.';
 
                 trigger OnAction()
+                var
+                    PasswordCodeunit: Codeunit "Password";
                 begin
-                    Rec.Init();
+                    PasswordCodeunit.SetCurrentUser('');
+                    Rec.SetUser('');
                 end;
             }
 
@@ -82,7 +90,12 @@ page 50110 "Login Info"
     }
 
     trigger OnOpenPage()
+    var
+        Password: Codeunit Password;
     begin
-        Rec.Init();
+        if not Rec.SetUser(Password.GetCurrentUser()) then begin
+            Rec.Init();
+            Rec.Insert();
+        end;
     end;
 }
