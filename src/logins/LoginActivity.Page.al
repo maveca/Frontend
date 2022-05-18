@@ -3,7 +3,7 @@
 /// </summary>
 page 50116 "LoginActivity"
 {
-    Caption = 'Card Info';
+    Caption = 'Cart Info';
     PageType = CardPart;
     SourceTable = UserActivity;
     RefreshOnActivate = true;

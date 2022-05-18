@@ -19,7 +19,7 @@ page 50100 UserRoleCenter
                 part(UserActivity; UserActivity) { }
                 part(DeveloperActivity; DeveloperActivity) { }
                 part(ResourcePart; "Resource Part") { }
-                group(X)
+                group(User)
                 {
                     part(LoginActivity; "LoginActivity") { }
                     part(LoginPart; "Login Info") { }
