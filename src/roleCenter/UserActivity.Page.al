@@ -3,7 +3,7 @@
 /// </summary>
 page 50101 UserActivity
 {
-    Caption = 'Public Activity';
+    Caption = 'Shop Departments';
     PageType = CardPart;
     SourceTable = UserActivity;
     RefreshOnActivate = true;
@@ -54,19 +54,4 @@ page 50101 UserActivity
             Rec.Insert(true);
         end;
     end;
-
-    trigger OnAfterGetCurrRecord()
-    begin
-        IsAdmin := IsAdministrator();
-    end;
-
-    local procedure IsAdministrator(): Boolean
-    var
-        LoginManagement: Codeunit "Login Management";
-    begin
-        exit(LoginManagement.GetCurrentLogin().Admin);
-    end;
-
-    var
-        IsAdmin: Boolean;
 }

@@ -17,24 +17,12 @@ page 50100 UserRoleCenter
             group(Insights)
             {
                 part(UserActivity; UserActivity) { }
-
-
-                part(ResourcePart; "Resource Picture")
-                {
-                    SubPageLink = "No." = const('LINA');
-                }
                 part(DeveloperActivity; DeveloperActivity) { }
-
-                group(User)
+                part(ResourcePart; "Resource Part") { }
+                group(X)
                 {
-                    group(a1)
-                    {
-                        part(LoginActivity; "LoginActivity") { }
-                    }
-                    group(a2)
-                    {
-                        part(LoginPart; "Login Info") { }
-                    }
+                    part(LoginActivity; "LoginActivity") { }
+                    part(LoginPart; "Login Info") { }
                 }
             }
         }
