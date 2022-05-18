@@ -47,6 +47,28 @@ page 50103 "Cart Entries"
                     ApplicationArea = All;
                 }
             }
+            grid(Total)
+            {
+                GridLayout = Columns;
+                group(col1)
+                {
+                    field(TotalAmount1; GetTotalAmount())
+                    {
+                        Caption = 'Total Amount';
+                        ToolTip = 'Specifies the value of the Total Amount field.';
+                        ApplicationArea = All;
+                    }
+                }
+                group(col2)
+                {
+                    field(TotalAmount; GetTotalAmount())
+                    {
+                        Caption = 'Total Amount';
+                        ToolTip = 'Specifies the value of the Total Amount field.';
+                        ApplicationArea = All;
+                    }
+                }
+            }
         }
     }
 
@@ -67,4 +89,12 @@ page 50103 "Cart Entries"
             }
         }
     }
+
+    local procedure GetTotalAmount(): Decimal
+    var
+        CartEntry: Record "Cart Entry";
+    begin
+        CartEntry.CalcSums(Amount);
+        exit(CartEntry.Amount)
+    end;
 }

@@ -22,9 +22,9 @@ page 50100 UserRoleCenter
                     Caption = 'UserActivity';
                 }
 
-                part(CustomerCardPart1; "Customer Picture")
+                part(ResourcePart; "Resource Picture")
                 {
-                    SubPageLink = "No." = const('01121212');
+                    SubPageLink = "No." = const('LINA');
                 }
 
                 part(CustomerListPart2; CustomerListPart)
