@@ -60,6 +60,10 @@ codeunit 50103 "Backend API"
         exit(StrSubstNo(standardUrlTok, GetBaseUrl(), ServiceVersion));
     end;
 
+    /// <summary>
+    /// GetCustomURL.
+    /// </summary>
+    /// <returns>Return value of type Text.</returns>
     procedure GetCustomURL(): Text
     begin
         exit(GetStandardURL('v1.0'));
@@ -155,7 +159,7 @@ codeunit 50103 "Backend API"
     end;
 
     /// <summary>
-    /// ConnectToAPI.
+    /// Calls web api service with GET method. This is for reading data.
     /// </summary>
     /// <param name="url">Text.</param>
     /// <param name="JsonValueToken">VAR JsonToken.</param>
@@ -184,7 +188,7 @@ codeunit 50103 "Backend API"
     end;
 
     /// <summary>
-    /// PostMethod.
+    /// Calls web api service with POST method. This is for inserting new data.
     /// </summary>
     /// <param name="url">Text.</param>
     /// <param name="content">Text.</param>
@@ -218,14 +222,13 @@ codeunit 50103 "Backend API"
         JsonObjectDocument.ReadFrom(OutputString);
     end;
 
-
     /// <summary>
-    /// Put Method
+    /// Calls web api service with PUT method. This is for modifying data.
     /// </summary>
     /// <param name="url">Text.</param>
     /// <param name="ObjectToUpdate">JsonObject.</param>
     /// <param name="content">Text.</param>
-    /// <returns>Return variable Result of type JsonObject.</returns>
+    /// <returns>Returns response document of type JsonObject.</returns>
     procedure Put(url: Text; ObjectToUpdate: JsonToken; content: Text) Result: JsonObject
     var
         WebServiceSetup: Record "Web Service Setup";

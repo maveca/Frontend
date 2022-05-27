@@ -51,10 +51,19 @@ page 50117 "DeveloperActivity"
 
                         action(ActionAPIPut)
                         {
-                            Image = TileGreen;
+                            Image = TileLemon;
                             ToolTip = 'Demonstrate Put Method';
                             Caption = 'Update Customer';
                             RunObject = Codeunit "Update Customer";
+                        }
+
+
+                        action(ActionJson)
+                        {
+                            Image = TileViolet;
+                            ToolTip = 'Demonstrate Composing Json';
+                            Caption = 'Json';
+                            RunObject = Codeunit "Json Builder";
                         }
 
                     }
