@@ -58,12 +58,12 @@ page 50117 "DeveloperActivity"
                         }
 
 
-                        action(ActionJson)
+                        action(ActionTest)
                         {
                             Image = TileViolet;
-                            ToolTip = 'Demonstrate Composing Json';
-                            Caption = 'Json';
-                            RunObject = Codeunit "Json Builder";
+                            ToolTip = 'Developer''s test';
+                            Caption = 'Test';
+                            RunObject = Codeunit "Url Builder";
                         }
 
                     }

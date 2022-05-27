@@ -3,6 +3,42 @@
 /// </summary>
 codeunit 50112 "Url Builder"
 {
+    var
+        Url: Text;
+
+    trigger OnRun()
+    var
+        UrlBuilder: Codeunit "Url Builder";
+    begin
+        Message(UrlBuilder.Api().AsString());
+    end;
+
+    procedure Set(NewUrl: Text)
+    begin
+        Url := NewUrl;
+    end;
+
+    procedure AsString(): Text;
+    begin
+        exit(Url);
+    end;
+
+    procedure Api(): Codeunit "Url Builder";
+    var
+        UrlBuilder: Codeunit "Url Builder";
+    begin
+        UrlBuilder.Set(GetBaseUrl());
+        exit(UrlBuilder);
+    end;
+
+    procedure Company(): Codeunit "Url Builder";
+    var
+        UrlBuilder: Codeunit "Url Builder";
+    begin
+        UrlBuilder.Set(GetBaseUrl());
+        exit(UrlBuilder);
+    end;
+
     local procedure GetBaseUrl(): Text
     var
         WebServiceSetup: Record "Web Service Setup";

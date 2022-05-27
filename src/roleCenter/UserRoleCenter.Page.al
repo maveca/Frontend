@@ -91,6 +91,14 @@ page 50100 UserRoleCenter
 
             }
 
+            action("Web Service Setup")
+            {
+                ApplicationArea = All;
+                Caption = 'Web Service Setup';
+                RunObject = Page "Web Service Setup";
+                ToolTip = 'Executes the Web Service Setup action.';
+            }
+
 
         }
 

@@ -15,25 +15,67 @@ page 50105 "Web Service Setup"
         {
             group(General)
             {
-                field("Base Url"; Rec."Base Url")
+                grid(Grid1)
                 {
-                    ToolTip = 'Specifies the value of the Base Url field.';
-                    ApplicationArea = All;
+                    group(Column1)
+                    {
+                        ShowCaption = false;
+                        field("Base Url"; Rec."Base Url")
+                        {
+                            ToolTip = 'Specifies the value of the Base Url field.';
+                            ApplicationArea = All;
+                        }
+                        field("Default Tenant"; Rec."Default Tenant")
+                        {
+                            ApplicationArea = All;
+                            ToolTip = 'Specifies the value of the Default Tenant field.';
+                        }
+                        field("Default Company"; Rec."Default Company")
+                        {
+                            ApplicationArea = All;
+                            ToolTip = 'Specifies the value of the Default Company field.';
+                        }
+                        field(Authentication; Rec.Authentication)
+                        {
+                            ApplicationArea = All;
+                            ToolTip = 'Specifies the value of the Authentication field.';
+
+                            trigger OnValidate()
+                            begin
+                                IsBasicAuth := Rec.Authentication = Rec.Authentication::Basic;
+                            end;
+                        }
+                    }
                 }
-                field(UserName; Rec.UserName)
+            }
+            group(User)
+            {
+                Caption = 'Login Information';
+                Visible = IsBasicAuth;
+                grid(Grid2)
                 {
-                    ToolTip = 'Specifies the value of the UserName field.';
-                    ApplicationArea = All;
-                }
-                field(Password; Rec.Password)
-                {
-                    ToolTip = 'Specifies the value of the Password field.';
-                    ApplicationArea = All;
-                    ExtendedDatatype = Masked;
+                    group(Column2)
+                    {
+                        ShowCaption = false;
+                        field(UserName; Rec.UserName)
+                        {
+                            ToolTip = 'Specifies the value of the UserName field.';
+                            ApplicationArea = All;
+                        }
+                        field(Password; Rec.Password)
+                        {
+                            ToolTip = 'Specifies the value of the Password field.';
+                            ApplicationArea = All;
+                            ExtendedDatatype = Masked;
+                        }
+                    }
                 }
             }
         }
     }
+
+    var
+        IsBasicAuth: Boolean;
 
     trigger OnOpenPage()
     begin
@@ -42,11 +84,20 @@ page 50105 "Web Service Setup"
             Rec."Base Url" := GetBaseURL();
             Rec.Insert();
         end;
+
+        if Rec."Default Company" = '' then begin
+            Rec."Base Url" := GetBaseURL();
+            Rec."Default Company" := CopyStr(CompanyName(), 1, 30);
+            Rec."Default Tenant" := 'default';
+            REc.Modify();
+        end;
+
+        IsBasicAuth := Rec.Authentication = Rec.Authentication::Basic;
     end;
 
     local procedure GetBaseURL(): Text[250]
     begin
-        exit('http://betsandbox.westeurope.cloudapp.azure.com:7048/E1/api/v2.0');
+        exit('http://betsandbox.westeurope.cloudapp.azure.com:7048/E1/api');
     end;
 
 }
