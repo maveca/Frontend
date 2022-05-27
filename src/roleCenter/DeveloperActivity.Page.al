@@ -54,7 +54,7 @@ page 50117 "DeveloperActivity"
                             Image = TileLemon;
                             ToolTip = 'Demonstrate Put Method';
                             Caption = 'Update Customer';
-                            RunObject = Codeunit "Update Customer";
+                            RunObject = Codeunit "WS Update Customer";
                         }
 
 

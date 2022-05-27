@@ -31,45 +31,6 @@ codeunit 50103 "Backend API"
         HttpHeaders.Add('If-Match', Etag);
     end;
 
-    local procedure GetBaseUrl(): Text
-    var
-        WebServiceSetup: Record "Web Service Setup";
-    begin
-        WebServiceSetup.Get();
-        exit(WebServiceSetup."Base Url");
-    end;
-
-    /// <summary>
-    /// GetStandardURL.
-    /// </summary>
-    /// <returns>Return value of type Text.</returns>
-    procedure GetStandardURL(): Text
-    begin
-        exit(GetStandardURL('v2.0'));
-    end;
-
-    /// <summary>
-    /// GetBaseURL.
-    /// </summary>
-    /// <param name="ServiceVersion">Version of service.</param>
-    /// <returns>Return value of type Text.</returns>
-    procedure GetStandardURL(ServiceVersion: Text): Text
-    var
-        standardUrlTok: Label '%1/%2', Locked = true;
-    begin
-        exit(StrSubstNo(standardUrlTok, GetBaseUrl(), ServiceVersion));
-    end;
-
-    /// <summary>
-    /// GetCustomURL.
-    /// </summary>
-    /// <returns>Return value of type Text.</returns>
-    procedure GetCustomURL(): Text
-    begin
-        exit(GetStandardURL('v1.0'));
-    end;
-
-
     /// <summary>
     /// GetFieldAsText returns text from a document.
     /// </summary>
@@ -107,11 +68,6 @@ codeunit 50103 "Backend API"
         exit(GetFieldAsText(JsonObject, '@odata.etag'));
     end;
 
-    local procedure GetId(JsonObject: JsonObject): Text
-    begin
-        exit(GetFieldAsText(JsonObject, 'id'));
-    end;
-
     /// <summary>
     /// GetCompanyId returns id of company that corresponds to Company Name from parameter.
     /// </summary>
@@ -120,13 +76,14 @@ codeunit 50103 "Backend API"
     procedure GetCompanyId(CompName: Text): Text
     var
         TempCompany: Record Company temporary;
+        UrlBuilder: Codeunit "Url Builder";
         JsonValueToken: JsonToken;
         JsonArrayCompanies: JsonArray;
         JsonTokenCompany: JsonToken;
         JsonObjectCompany: JsonObject;
         i: integer;
     begin
-        Get(GetStandardURL() + '/companies', JsonValueToken);
+        Get(UrlBuilder.GetStandardURL() + '/companies', JsonValueToken);
         JsonArrayCompanies := JsonValueToken.AsArray();
         for i := 0 to JsonArrayCompanies.Count() - 1 do begin
             JsonArrayCompanies.Get(i, JsonTokenCompany);
@@ -151,11 +108,12 @@ codeunit 50103 "Backend API"
     /// <returns>Return value of type Text.</returns>
     procedure Url(CompanyName: Text; ServiceName: Text): Text
     var
+        UrlBuilder: Codeunit "Url Builder";
         CompanyId: Text;
         UrlTok: Label '%1/companies(%2)/%3', Locked = true;
     begin
         CompanyId := GetCompanyId(CompanyName);
-        exit(StrSubstNo(UrlTok, GetStandardURL(), CompanyId, ServiceName));
+        exit(StrSubstNo(UrlTok, UrlBuilder.GetStandardURL(), CompanyId, ServiceName));
     end;
 
     /// <summary>

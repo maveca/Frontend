@@ -7,11 +7,12 @@ codeunit 50108 WSGetItemsTemp
     var
         TempItem: Record Item temporary;
         BackendAPI: Codeunit "Backend API";
+        UrlBuilder: Codeunit "Url Builder";
         CompanyId: Text;
         UrlLbl: Label '%1/companies(%2)/items?$filter=itemCategoryCode eq ''FM''', Comment = '%1: base url, %2: company id.';
     begin
         CompanyId := BackendAPI.GetCompanyId('Kristina');
-        GetItems(StrSubstNo(UrlLbl, BackendAPI.GetStandardURL(), CompanyId), CompanyId, TempItem);
+        GetItems(StrSubstNo(UrlLbl, UrlBuilder.GetStandardURL(), CompanyId), CompanyId, TempItem);
         Page.Run(0, TempItem);
     end;
 
@@ -19,6 +20,7 @@ codeunit 50108 WSGetItemsTemp
     var
         BackendAPI: Codeunit "Backend API";
         BackendAPIPicture: Codeunit "Backend API";
+        UrlBuilder: Codeunit "Url Builder";
         //Base64: Codeunit "Base64 Convert";
         TempBlob: Codeunit "Temp Blob";
         JsonValueToken: JsonToken;
@@ -49,7 +51,7 @@ codeunit 50108 WSGetItemsTemp
                     TempItem.Picture.Remove(TempItem.Picture.Item(i));
 
             itemId := BackendAPIPicture.GetFieldAsText(JsonObjectItem, 'id');
-            BackendAPIPicture.Get(StrSubstNo(urlLbl, BackendAPI.GetStandardURL(), CompanyId, itemId), JsonTokenPicture);
+            BackendAPIPicture.Get(StrSubstNo(urlLbl, UrlBuilder.GetStandardURL(), CompanyId, itemId), JsonTokenPicture);
             // not base64
             JsonTokenPicture.WriteTo(TempBlob.CreateOutStream());
             TempItem.Picture.ImportStream(TempBlob.CreateInStream(), '', 'image/png');

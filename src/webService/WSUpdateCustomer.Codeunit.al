@@ -2,7 +2,7 @@
 /// <summary>
 /// Codeunit Update Customer (ID 50110).
 /// </summary>
-codeunit 50110 "Update Customer"
+codeunit 50110 "WS Update Customer"
 {
     trigger OnRun()
     var

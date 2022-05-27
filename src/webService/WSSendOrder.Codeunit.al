@@ -7,6 +7,7 @@ codeunit 50105 WSSendOrder
     var
         CartEntry: Record "Cart Entry";
         BackendAPI: Codeunit "Backend API";
+        UrlBuilder: Codeunit "Url Builder";
         CompanyId: Text;
         OrderId: Text;
         UrlHeaderLbl: Label '%1/companies(%2)/salesOrders', Comment = '%1: base url, %2: company id.';
@@ -14,11 +15,11 @@ codeunit 50105 WSSendOrder
         CartLbl: Label 'Your cart has been sent.';
     begin
         CompanyId := BackendAPI.GetCompanyId('CRONUS International Ltd.');
-        OrderId := PostSales(StrSubstNo(UrlHeaderLbl, BackendAPI.GetStandardURL(), CompanyId),
+        OrderId := PostSales(StrSubstNo(UrlHeaderLbl, UrlBuilder.GetStandardURL(), CompanyId),
             HeaderContent(Today(), '30000'));
         if CartEntry.FindSet() then
             repeat
-                PostSales(StrSubstNo(UrlLineLbl, BackendAPI.GetStandardURL(), CompanyId, OrderId),
+                PostSales(StrSubstNo(UrlLineLbl, UrlBuilder.GetStandardURL(), CompanyId, OrderId),
                     LineContent('Item', CartEntry."Item No.", CartEntry.Quantity));
             until CartEntry.Next() = 0;
         Message(CartLbl);
