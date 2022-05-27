@@ -41,12 +41,20 @@ page 50117 "DeveloperActivity"
                             Caption = 'Get Items';
                             RunObject = Codeunit WSGetItems;
                         }
-                        action(ActionAPIPost)
+                        action(ActionLogin)
                         {
                             Image = TileGreen;
                             ToolTip = 'Demonstrate Password';
                             Caption = 'Password';
                             RunObject = Codeunit "Login Management";
+                        }
+
+                        action(ActionAPIPut)
+                        {
+                            Image = TileGreen;
+                            ToolTip = 'Demonstrate Put Method';
+                            Caption = 'Update Customer';
+                            RunObject = Codeunit "Update Customer";
                         }
 
                     }

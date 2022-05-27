@@ -6,19 +6,19 @@ codeunit 50105 WSSendOrder
     trigger OnRun()
     var
         CartEntry: Record "Cart Entry";
-        WSGetCompanies: Codeunit BackendAPI;
+        BackendAPI: Codeunit "Backend API";
         CompanyId: Text;
         OrderId: Text;
         UrlHeaderLbl: Label '%1/companies(%2)/salesOrders', Comment = '%1: base url, %2: company id.';
         UrlLineLbl: Label '%1/companies(%2)/salesOrders(%3)/salesOrderLines', Comment = '%1: base url, %2: company id., %3: order id';
         CartLbl: Label 'Your cart has been sent.';
     begin
-        CompanyId := WSGetCompanies.GetCompanyId('CRONUS International Ltd.');
-        OrderId := PostSales(StrSubstNo(UrlHeaderLbl, WSGetCompanies.GetBaseURL(), CompanyId),
+        CompanyId := BackendAPI.GetCompanyId('CRONUS International Ltd.');
+        OrderId := PostSales(StrSubstNo(UrlHeaderLbl, BackendAPI.GetStandardURL(), CompanyId),
             HeaderContent(Today(), '30000'));
         if CartEntry.FindSet() then
             repeat
-                PostSales(StrSubstNo(UrlLineLbl, WSGetCompanies.GetBaseURL(), CompanyId, OrderId),
+                PostSales(StrSubstNo(UrlLineLbl, BackendAPI.GetStandardURL(), CompanyId, OrderId),
                     LineContent('Item', CartEntry."Item No.", CartEntry.Quantity));
             until CartEntry.Next() = 0;
         Message(CartLbl);
@@ -27,11 +27,11 @@ codeunit 50105 WSSendOrder
 
     local procedure PostSales(url: Text; content: Text): Text
     var
-        WSGetCompanies: Codeunit BackendAPI;
+        BackendAPI: Codeunit "Backend API";
         JsonObjectDocument: JsonObject;
         JsonToken: JsonToken;
     begin
-        WSGetCompanies.PostMethod(url, content, JsonObjectDocument);
+        BackendAPI.Post(url, content, JsonObjectDocument);
         JsonObjectDocument.Get('id', JsonToken);
         exit(JsonToken.AsValue().AsText());
     end;

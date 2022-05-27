@@ -6,19 +6,19 @@ codeunit 50104 WSGetItems
     trigger OnRun()
     var
         Item: Record Item;
-        WSGetCompanies: Codeunit BackendAPI;
+        BackendAPI: Codeunit "Backend API";
         CompanyId: Text;
         UrlLbl: Label '%1/companies(%2)/items?$filter=itemCategoryCode eq ''FM''', Comment = '%1: base url, %2: company id.';
     begin
-        CompanyId := WSGetCompanies.GetCompanyId('Kristina');
-        GetItems(StrSubstNo(UrlLbl, WSGetCompanies.GetBaseURL(), CompanyId), CompanyId, Item);
+        CompanyId := BackendAPI.GetCompanyId('Kristina');
+        GetItems(StrSubstNo(UrlLbl, BackendAPI.GetStandardURL(), CompanyId), CompanyId, Item);
         Page.Run(0, Item);
     end;
 
     local procedure GetItems(url: Text; CompanyId: Text; var Item: Record Item)
     var
-        WSGetCompanies: Codeunit BackendAPI;
-        WSGetCompaniesPicture: Codeunit BackendAPI;
+        BackendAPI: Codeunit "Backend API";
+        BackendAPIPicture: Codeunit "Backend API";
         //Base64: Codeunit "Base64 Convert";
         TempBlob: Codeunit "Temp Blob";
         JsonValueToken: JsonToken;
@@ -33,25 +33,25 @@ codeunit 50104 WSGetItems
         // Option a)
         Item.DeleteAll();
 
-        WSGetCompanies.ConnectToAPI(url, JsonValueToken);
+        BackendAPI.Get(url, JsonValueToken);
         JsonArrayItems := JsonValueToken.AsArray();
         for i := 0 to JsonArrayItems.Count() - 1 do begin
             JsonArrayItems.Get(i, JsonTokenItem);
             JsonObjectItem := JsonTokenItem.AsObject();
 
             Item.Init();
-            Item."No." := CopyStr(WSGetCompanies.GetFieldAsText(JsonObjectItem, 'number'), 1, 20);
+            Item."No." := CopyStr(BackendAPI.GetFieldAsText(JsonObjectItem, 'number'), 1, 20);
             if not Item.Insert(true) then;
-            Item.Validate(Description, CopyStr(WSGetCompanies.GetFieldAsText(JsonObjectItem, 'displayName'), 1, 100));
-            Item.Validate("Unit Price", WSGetCompanies.GetFieldAsDecimal(JsonObjectItem, 'unitPrice'));
+            Item.Validate(Description, CopyStr(BackendAPI.GetFieldAsText(JsonObjectItem, 'displayName'), 1, 100));
+            Item.Validate("Unit Price", BackendAPI.GetFieldAsDecimal(JsonObjectItem, 'unitPrice'));
             Item.Modify(true);
 
             if Item.Picture.Count() > 0 then
                 for i := 0 to Item.Picture.Count() - 1 do
                     Item.Picture.Remove(Item.Picture.Item(i));
 
-            itemId := WSGetCompaniesPicture.GetFieldAsText(JsonObjectItem, 'id');
-            WSGetCompaniesPicture.ConnectToAPI(StrSubstNo(urlLbl, WSGetCompanies.GetBaseURL(), CompanyId, itemId), JsonTokenPicture);
+            itemId := BackendAPIPicture.GetFieldAsText(JsonObjectItem, 'id');
+            BackendAPIPicture.Get(StrSubstNo(urlLbl, BackendAPI.GetStandardURL(), CompanyId, itemId), JsonTokenPicture);
             // not base64
             JsonTokenPicture.WriteTo(TempBlob.CreateOutStream());
             Item.Picture.ImportStream(TempBlob.CreateInStream(), '', 'image/png');

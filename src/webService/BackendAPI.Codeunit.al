@@ -1,12 +1,8 @@
 /// <summary>
-/// Codeunit WSGetCompanies (ID 50103).
+/// Codeunit BackendAPI is helper for calling all backend api services.
 /// </summary>
-codeunit 50103 "BackendAPI"
+codeunit 50103 "Backend API"
 {
-    trigger OnRun()
-    begin
-        Message(GetCompanyId('CRONUS International Ltd.'));
-    end;
 
     local procedure AddDefaultHeaders(var HttpClient: HttpClient; UserName: Text; Password: Text)
     var
@@ -21,11 +17,21 @@ codeunit 50103 "BackendAPI"
                 StrSubstNo(UserPwdTok, UserName, Password)));
     end;
 
-    /// <summary>
-    /// GetBaseURL.
-    /// </summary>
-    /// <returns>Return value of type Text.</returns>
-    procedure GetBaseURL(): Text
+    local procedure AddDefaultHeaders(var HttpClient: HttpClient; UserName: Text; Password: Text; Etag: Text)
+    var
+        Base64Convert: Codeunit "Base64 Convert";
+        HttpHeaders: HttpHeaders;
+        BasicTok: Label 'Basic ', Comment = '%1 = placeholder for username and password.';
+        UserPwdTok: Label '%1:%2', Comment = '%1 = Username, %2 = Password.';
+    begin
+        HttpHeaders := HttpClient.DefaultRequestHeaders();
+        HttpHeaders.Add('Authorization', BasicTok
+            + Base64Convert.ToBase64(
+                StrSubstNo(UserPwdTok, UserName, Password)));
+        HttpHeaders.Add('If-Match', Etag);
+    end;
+
+    local procedure GetBaseUrl(): Text
     var
         WebServiceSetup: Record "Web Service Setup";
     begin
@@ -34,7 +40,34 @@ codeunit 50103 "BackendAPI"
     end;
 
     /// <summary>
-    /// GetFieldAsText.
+    /// GetStandardURL.
+    /// </summary>
+    /// <returns>Return value of type Text.</returns>
+    procedure GetStandardURL(): Text
+    begin
+        exit(GetStandardURL('v2.0'));
+    end;
+
+    /// <summary>
+    /// GetBaseURL.
+    /// </summary>
+    /// <param name="ServiceVersion">Version of service.</param>
+    /// <returns>Return value of type Text.</returns>
+    procedure GetStandardURL(ServiceVersion: Text): Text
+    var
+        standardUrlTok: Label '%1/%2', Locked = true;
+    begin
+        exit(StrSubstNo(standardUrlTok, GetBaseUrl(), ServiceVersion));
+    end;
+
+    procedure GetCustomURL(): Text
+    begin
+        exit(GetStandardURL('v1.0'));
+    end;
+
+
+    /// <summary>
+    /// GetFieldAsText returns text from a document.
     /// </summary>
     /// <param name="JsonObject">VAR JsonObject.</param>
     /// <param name="FieldName">Text.</param>
@@ -50,7 +83,7 @@ codeunit 50103 "BackendAPI"
     end;
 
     /// <summary>
-    /// GetFieldAsDecimal.
+    /// GetFieldAsDecimal returns decimal from a document.
     /// </summary>
     /// <param name="JsonObject">VAR JsonObject.</param>
     /// <param name="FieldName">Text.</param>
@@ -65,8 +98,18 @@ codeunit 50103 "BackendAPI"
         exit(JsonValue.AsDecimal());
     end;
 
+    local procedure GetETag(JsonObject: JsonObject): Text
+    begin
+        exit(GetFieldAsText(JsonObject, '@odata.etag'));
+    end;
+
+    local procedure GetId(JsonObject: JsonObject): Text
+    begin
+        exit(GetFieldAsText(JsonObject, 'id'));
+    end;
+
     /// <summary>
-    /// GetCompanyId.
+    /// GetCompanyId returns id of company that corresponds to Company Name from parameter.
     /// </summary>
     /// <param name="CompName">Text.</param>
     /// <returns>Return value of type Text.</returns>
@@ -79,7 +122,7 @@ codeunit 50103 "BackendAPI"
         JsonObjectCompany: JsonObject;
         i: integer;
     begin
-        ConnectToAPI(GetBaseURL() + '/companies', JsonValueToken);
+        Get(GetStandardURL() + '/companies', JsonValueToken);
         JsonArrayCompanies := JsonValueToken.AsArray();
         for i := 0 to JsonArrayCompanies.Count() - 1 do begin
             JsonArrayCompanies.Get(i, JsonTokenCompany);
@@ -97,11 +140,26 @@ codeunit 50103 "BackendAPI"
     end;
 
     /// <summary>
+    /// Url for most of then calls.
+    /// </summary>
+    /// <param name="CompanyName">Text.</param>
+    /// <param name="ServiceName">Text.</param>
+    /// <returns>Return value of type Text.</returns>
+    procedure Url(CompanyName: Text; ServiceName: Text): Text
+    var
+        CompanyId: Text;
+        UrlTok: Label '%1/companies(%2)/%3', Locked = true;
+    begin
+        CompanyId := GetCompanyId(CompanyName);
+        exit(StrSubstNo(UrlTok, GetStandardURL(), CompanyId, ServiceName));
+    end;
+
+    /// <summary>
     /// ConnectToAPI.
     /// </summary>
     /// <param name="url">Text.</param>
     /// <param name="JsonValueToken">VAR JsonToken.</param>
-    procedure ConnectToAPI(url: Text; var JsonValueToken: JsonToken)
+    procedure Get(url: Text; var JsonValueToken: JsonToken)
     var
         WebServiceSetup: Record "Web Service Setup";
         HttpClient: HttpClient;
@@ -117,7 +175,7 @@ codeunit 50103 "BackendAPI"
             Error('The url %1 cannot be accessed.', url);
 
         if not (HttpResponseMessage.HttpStatusCode() = 200) then
-            Error('Web service returned error %1.', HttpResponseMessage.HttpStatusCode());
+            Error('Web service returned error %1: %2', HttpResponseMessage.HttpStatusCode(), HttpResponseMessage.ReasonPhrase);
 
         HttpContent := HttpResponseMessage.Content();
         HttpContent.ReadAs(OutputString);
@@ -131,7 +189,7 @@ codeunit 50103 "BackendAPI"
     /// <param name="url">Text.</param>
     /// <param name="content">Text.</param>
     /// <param name="JsonObjectDocument">VAR JsonToken.</param>
-    procedure PostMethod(url: Text; content: Text; var JsonObjectDocument: JsonObject)
+    procedure Post(url: Text; content: Text; var JsonObjectDocument: JsonObject)
     var
         WebServiceSetup: Record "Web Service Setup";
         HttpClient: HttpClient;
@@ -153,11 +211,46 @@ codeunit 50103 "BackendAPI"
             Error('The url %1 cannot be accessed.', url);
 
         if not (HttpResponseMessage.HttpStatusCode() in [200, 201]) then
-            Error('Web service returned error %1.', HttpResponseMessage.HttpStatusCode());
+            Error('Web service returned error %1: %2', HttpResponseMessage.HttpStatusCode(), HttpResponseMessage.ReasonPhrase);
 
         HttpContent := HttpResponseMessage.Content();
         HttpContent.ReadAs(OutputString);
         JsonObjectDocument.ReadFrom(OutputString);
     end;
 
+
+    /// <summary>
+    /// Put Method
+    /// </summary>
+    /// <param name="url">Text.</param>
+    /// <param name="ObjectToUpdate">JsonObject.</param>
+    /// <param name="content">Text.</param>
+    /// <returns>Return variable Result of type JsonObject.</returns>
+    procedure Put(url: Text; ObjectToUpdate: JsonToken; content: Text) Result: JsonObject
+    var
+        WebServiceSetup: Record "Web Service Setup";
+        HttpClient: HttpClient;
+        HttpResponseMessage: HttpResponseMessage;
+        HttpContent: HttpContent;
+        HttpHeaders: HttpHeaders;
+        OutputString: Text;
+    begin
+        WebServiceSetup.Get();
+        AddDefaultHeaders(HttpClient, WebServiceSetup.UserName, WebServiceSetup.Password, GetETag(ObjectToUpdate.AsObject()));
+        HttpContent.WriteFrom(content);
+
+        HttpContent.GetHeaders(HttpHeaders);
+        HttpHeaders.Remove('Content-Type');
+        HttpHeaders.Add('Content-Type', 'application/json');
+
+        if not HttpClient.Put(url, HttpContent, HttpResponseMessage) then
+            Error('The url %1 cannot be accessed.', url);
+
+        if not (HttpResponseMessage.HttpStatusCode() in [200, 201]) then
+            Error('Web service returned error %1: %2', HttpResponseMessage.HttpStatusCode(), HttpResponseMessage.ReasonPhrase);
+
+        HttpContent := HttpResponseMessage.Content();
+        HttpContent.ReadAs(OutputString);
+        Result.ReadFrom(OutputString);
+    end;
 }
