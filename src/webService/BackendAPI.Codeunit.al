@@ -1,7 +1,7 @@
 /// <summary>
 /// Codeunit WSGetCompanies (ID 50103).
 /// </summary>
-codeunit 50103 WSGetCompanies
+codeunit 50103 "BackendAPI"
 {
     trigger OnRun()
     begin

@@ -6,7 +6,7 @@ codeunit 50105 WSSendOrder
     trigger OnRun()
     var
         CartEntry: Record "Cart Entry";
-        WSGetCompanies: Codeunit WSGetCompanies;
+        WSGetCompanies: Codeunit BackendAPI;
         CompanyId: Text;
         OrderId: Text;
         UrlHeaderLbl: Label '%1/companies(%2)/salesOrders', Comment = '%1: base url, %2: company id.';
@@ -27,7 +27,7 @@ codeunit 50105 WSSendOrder
 
     local procedure PostSales(url: Text; content: Text): Text
     var
-        WSGetCompanies: Codeunit WSGetCompanies;
+        WSGetCompanies: Codeunit BackendAPI;
         JsonObjectDocument: JsonObject;
         JsonToken: JsonToken;
     begin

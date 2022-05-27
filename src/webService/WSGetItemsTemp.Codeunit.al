@@ -6,7 +6,7 @@ codeunit 50108 WSGetItemsTemp
     trigger OnRun()
     var
         TempItem: Record Item temporary;
-        WSGetCompanies: Codeunit WSGetCompanies;
+        WSGetCompanies: Codeunit BackendAPI;
         CompanyId: Text;
         UrlLbl: Label '%1/companies(%2)/items?$filter=itemCategoryCode eq ''FM''', Comment = '%1: base url, %2: company id.';
     begin
@@ -17,8 +17,8 @@ codeunit 50108 WSGetItemsTemp
 
     local procedure GetItems(url: Text; CompanyId: Text; var TempItem: Record Item temporary)
     var
-        WSGetCompanies: Codeunit WSGetCompanies;
-        WSGetCompaniesPicture: Codeunit WSGetCompanies;
+        WSGetCompanies: Codeunit BackendAPI;
+        WSGetCompaniesPicture: Codeunit BackendAPI;
         //Base64: Codeunit "Base64 Convert";
         TempBlob: Codeunit "Temp Blob";
         JsonValueToken: JsonToken;
