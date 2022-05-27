@@ -19,7 +19,7 @@ codeunit 50108 WSGetItemsTemp
     var
         WSGetCompanies: Codeunit WSGetCompanies;
         WSGetCompaniesPicture: Codeunit WSGetCompanies;
-        Base64: Codeunit "Base64 Convert";
+        //Base64: Codeunit "Base64 Convert";
         TempBlob: Codeunit "Temp Blob";
         JsonValueToken: JsonToken;
         JsonArrayItems: JsonArray;
