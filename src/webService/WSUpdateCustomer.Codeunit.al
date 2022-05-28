@@ -7,9 +7,10 @@ codeunit 50110 "WS Update Customer"
     trigger OnRun()
     var
         BackendAPI: Codeunit "Backend API";
+        UrlBuilder: Codeunit "Url Builder";
+        JsonBuilder: Codeunit "Json Builder";
         Customers: JsonToken;
         FirstCustomer: JsonToken;
-        FirstCustomerObject: JsonObject;
         ContentObject: JsonObject;
         UpdatedCustomer: JsonObject;
         UpdatedCustomerValue: Text;
@@ -17,15 +18,15 @@ codeunit 50110 "WS Update Customer"
         Id: Text;
         Content: Text;
     begin
-        BackendAPI.Get(BackendAPI.Url('CRONUS International Ltd.', 'customers'), Customers);
+        BackendAPI.Get(UrlBuilder.Api().ApiVersion().Company().Entity('customers').AsString(), Customers);
 
         Customers.AsArray().Get(1, FirstCustomer);
-        FirstCustomerObject := FirstCustomer.AsObject();
+        JsonBuilder.New(FirstCustomer);
 
-        Id := BackendAPI.GetFieldAsText(FirstCustomerObject, 'id');
+        Id := JsonBuilder.Field('id').AsText();
         ContentObject.Add('addressLine2', 'Senhor square 15');
         ContentObject.WriteTo(Content);
-        Url := BackendAPI.Url('CRONUS International Ltd.', StrSubstNo('customers(%1)', Id));
+        Url := UrlBuilder.Api().ApiVersion().Company().Entity('customers', Id).AsString();
 
         UpdatedCustomer := BackendAPI.Put(Url, FirstCustomer, Content);
         UpdatedCustomer.WriteTo(UpdatedCustomerValue);

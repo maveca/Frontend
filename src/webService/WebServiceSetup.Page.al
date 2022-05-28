@@ -35,6 +35,11 @@ page 50105 "Web Service Setup"
                             ApplicationArea = All;
                             ToolTip = 'Specifies the value of the Default Company field.';
                         }
+                        field("Default System Version"; Rec."Default System Version")
+                        {
+                            ApplicationArea = All;
+                            ToolTip = 'Specifies the value of the Default Company field.';
+                        }
                         field(Authentication; Rec.Authentication)
                         {
                             ApplicationArea = All;
@@ -71,6 +76,33 @@ page 50105 "Web Service Setup"
                     }
                 }
             }
+            group(CustomAPI)
+            {
+                Caption = 'Extension API';
+                Visible = IsBasicAuth;
+                grid(Grid3)
+                {
+                    group(Column3)
+                    {
+                        ShowCaption = false;
+                        field("Custom API Publisher"; Rec."Custom API Publisher")
+                        {
+                            ApplicationArea = All;
+                            ToolTip = 'Specifies the value of the API Publisher field.';
+                        }
+                        field("Custom API Group"; REc."Custom API Group")
+                        {
+                            ApplicationArea = All;
+                            ToolTip = 'Specifies the value of the API Group field.';
+                        }
+                        field("Custom API Version"; Rec."Custom API Version")
+                        {
+                            ApplicationArea = All;
+                            ToolTip = 'Specifies the value of the API Version field.';
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -89,6 +121,7 @@ page 50105 "Web Service Setup"
             Rec."Base Url" := GetBaseURL();
             Rec."Default Company" := CopyStr(CompanyName(), 1, 30);
             Rec."Default Tenant" := 'default';
+            REc."Default System Version" := 'v2.0';
             REc.Modify();
         end;
 

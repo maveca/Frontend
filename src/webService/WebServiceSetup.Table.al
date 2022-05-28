@@ -4,7 +4,7 @@
 table 50102 "Web Service Setup"
 {
     Caption = 'Web Service Setup';
-    DataClassification = ToBeClassified;
+    DataClassification = SystemMetadata;
 
     fields
     {
@@ -42,6 +42,26 @@ table 50102 "Web Service Setup"
         {
             Caption = 'Authentication';
             DataClassification = SystemMetadata;
+        }
+        field(8; "Default System Version"; Text[10])
+        {
+            Caption = 'Default System Version';
+            DataClassification = SystemMetadata;
+        }
+        field(20; "Custom API Publisher"; Text[20])
+        {
+            Caption = 'API Publisher';
+            DataClassification = SystemMetadata;
+        }
+        field(21; "Custom API Group"; Text[20])
+        {
+            DataClassification = SystemMetadata;
+            Caption = 'API Group';
+        }
+        field(22; "Custom API Version"; Text[10])
+        {
+            DataClassification = SystemMetadata;
+            Caption = 'API Version';
         }
     }
     keys

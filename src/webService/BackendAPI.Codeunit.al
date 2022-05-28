@@ -31,41 +31,12 @@ codeunit 50103 "Backend API"
         HttpHeaders.Add('If-Match', Etag);
     end;
 
-    /// <summary>
-    /// GetFieldAsText returns text from a document.
-    /// </summary>
-    /// <param name="JsonObject">VAR JsonObject.</param>
-    /// <param name="FieldName">Text.</param>
-    /// <returns>Return value of type Text.</returns>
-    procedure GetFieldAsText(var JsonObject: JsonObject; FieldName: Text): Text
+    local procedure GetETag(JsonToken: JsonToken): Text
     var
-        JsonToken: JsonToken;
-        JsonValue: JsonValue;
+        JsonBuilder: Codeunit "Json Builder";
     begin
-        JsonObject.Get(FieldName, JsonToken);
-        JsonValue := JsonToken.AsValue();
-        exit(JsonValue.AsText());
-    end;
-
-    /// <summary>
-    /// GetFieldAsDecimal returns decimal from a document.
-    /// </summary>
-    /// <param name="JsonObject">VAR JsonObject.</param>
-    /// <param name="FieldName">Text.</param>
-    /// <returns>Return value of type Decimal.</returns>
-    procedure GetFieldAsDecimal(var JsonObject: JsonObject; FieldName: Text): Decimal
-    var
-        JsonToken: JsonToken;
-        JsonValue: JsonValue;
-    begin
-        JsonObject.Get(FieldName, JsonToken);
-        JsonValue := JsonToken.AsValue();
-        exit(JsonValue.AsDecimal());
-    end;
-
-    local procedure GetETag(JsonObject: JsonObject): Text
-    begin
-        exit(GetFieldAsText(JsonObject, '@odata.etag'));
+        JsonBuilder.New(JsonToken);
+        exit(JsonBuilder.Field('@odata.etag').AsText());
     end;
 
     /// <summary>
@@ -77,21 +48,21 @@ codeunit 50103 "Backend API"
     var
         TempCompany: Record Company temporary;
         UrlBuilder: Codeunit "Url Builder";
+        JsonBuilder: Codeunit "Json Builder";
         JsonValueToken: JsonToken;
         JsonArrayCompanies: JsonArray;
         JsonTokenCompany: JsonToken;
-        JsonObjectCompany: JsonObject;
         i: integer;
     begin
-        Get(UrlBuilder.GetStandardURL() + '/companies', JsonValueToken);
+        Get(UrlBuilder.Api().ApiVersion().Entity('companies').AsString(), JsonValueToken);
         JsonArrayCompanies := JsonValueToken.AsArray();
         for i := 0 to JsonArrayCompanies.Count() - 1 do begin
             JsonArrayCompanies.Get(i, JsonTokenCompany);
-            JsonObjectCompany := JsonTokenCompany.AsObject();
+            JsonBuilder.New(JsonTokenCompany);
 
             TempCompany.Init();
-            TempCompany."Name" := CopyStr(GetFieldAsText(JsonObjectCompany, 'name'), 1, 30);
-            TempCompany."Display Name" := CopyStr(GetFieldAsText(JsonObjectCompany, 'id'), 1, 250);
+            TempCompany."Name" := CopyStr(JsonBuilder.Field('name').AsText(), 1, 30);
+            TempCompany."Display Name" := CopyStr(JsonBuilder.Field('id').AsText(), 1, 250);
             TempCompany.Insert();
         end;
 
@@ -101,34 +72,32 @@ codeunit 50103 "Backend API"
     end;
 
     /// <summary>
-    /// Url for most of then calls.
-    /// </summary>
-    /// <param name="CompanyName">Text.</param>
-    /// <param name="ServiceName">Text.</param>
-    /// <returns>Return value of type Text.</returns>
-    procedure Url(CompanyName: Text; ServiceName: Text): Text
-    var
-        UrlBuilder: Codeunit "Url Builder";
-        CompanyId: Text;
-        UrlTok: Label '%1/companies(%2)/%3', Locked = true;
-    begin
-        CompanyId := GetCompanyId(CompanyName);
-        exit(StrSubstNo(UrlTok, UrlBuilder.GetStandardURL(), CompanyId, ServiceName));
-    end;
-
-    /// <summary>
     /// Calls web api service with GET method. This is for reading data.
     /// </summary>
     /// <param name="url">Text.</param>
-    /// <param name="JsonValueToken">VAR JsonToken.</param>
-    procedure Get(url: Text; var JsonValueToken: JsonToken)
+    /// <param name="ResponseValue">VAR JsonToken.</param>
+    procedure Get(url: Text; var ResponseValue: JsonToken)
+    var
+        HttpResponseMessage: HttpResponseMessage;
+        Response: Text;
+        Document: JsonObject;
+    begin
+        HttpResponseMessage := Get(url);
+        HttpResponseMessage.Content().ReadAs(Response);
+        Document.ReadFrom(Response);
+        if not Document.Get('value', ResponseValue) then
+            ResponseValue := Document.AsToken();
+    end;
+
+    /// <summary>
+    /// Get.
+    /// </summary>
+    /// <param name="url">Text.</param>
+    /// <returns>Return variable Response of type Text.</returns>
+    procedure Get(url: Text) HttpResponseMessage: HttpResponseMessage
     var
         WebServiceSetup: Record "Web Service Setup";
         HttpClient: HttpClient;
-        HttpResponseMessage: HttpResponseMessage;
-        HttpContent: HttpContent;
-        OutputString: Text;
-        JsonObjectDocument: JsonObject;
     begin
         WebServiceSetup.Get();
         AddDefaultHeaders(HttpClient, WebServiceSetup.UserName, WebServiceSetup.Password);
@@ -138,11 +107,6 @@ codeunit 50103 "Backend API"
 
         if not (HttpResponseMessage.HttpStatusCode() = 200) then
             Error('Web service returned error %1: %2', HttpResponseMessage.HttpStatusCode(), HttpResponseMessage.ReasonPhrase);
-
-        HttpContent := HttpResponseMessage.Content();
-        HttpContent.ReadAs(OutputString);
-        JsonObjectDocument.ReadFrom(OutputString);
-        JsonObjectDocument.Get('value', JsonValueToken);
     end;
 
     /// <summary>
@@ -197,7 +161,7 @@ codeunit 50103 "Backend API"
         OutputString: Text;
     begin
         WebServiceSetup.Get();
-        AddDefaultHeaders(HttpClient, WebServiceSetup.UserName, WebServiceSetup.Password, GetETag(ObjectToUpdate.AsObject()));
+        AddDefaultHeaders(HttpClient, WebServiceSetup.UserName, WebServiceSetup.Password, GetETag(ObjectToUpdate));
         HttpContent.WriteFrom(content);
 
         HttpContent.GetHeaders(HttpHeaders);

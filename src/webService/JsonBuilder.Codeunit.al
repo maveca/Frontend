@@ -156,4 +156,17 @@ codeunit 50111 "Json Builder"
                 exit('Unknown');
         end;
     end;
+
+    /// <summary>
+    /// Field returns value of field as JsonValue.
+    /// </summary>
+    /// <param name="FieldName">Name of the field to retrieve.</param>
+    /// <returns>Return value of type JsonFiles. Add AsText or such function to then end of this call.</returns>
+    procedure Field(FieldName: Text): JsonValue
+    var
+        JsonToken: JsonToken;
+    begin
+        DocumentToken.AsObject().Get(FieldName, JsonToken);
+        exit(JsonToken.AsValue());
+    end;
 }

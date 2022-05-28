@@ -63,7 +63,7 @@ page 50117 "DeveloperActivity"
                             Image = TileViolet;
                             ToolTip = 'Developer''s test';
                             Caption = 'Test';
-                            RunObject = Codeunit "Url Builder";
+                            RunObject = Codeunit Progress;
                         }
 
                     }

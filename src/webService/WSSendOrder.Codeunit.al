@@ -15,11 +15,11 @@ codeunit 50105 WSSendOrder
         CartLbl: Label 'Your cart has been sent.';
     begin
         CompanyId := BackendAPI.GetCompanyId('CRONUS International Ltd.');
-        OrderId := PostSales(StrSubstNo(UrlHeaderLbl, UrlBuilder.GetStandardURL(), CompanyId),
+        OrderId := PostSales(StrSubstNo(UrlHeaderLbl, UrlBuilder.BaseUrl(), CompanyId),
             HeaderContent(Today(), '30000'));
         if CartEntry.FindSet() then
             repeat
-                PostSales(StrSubstNo(UrlLineLbl, UrlBuilder.GetStandardURL(), CompanyId, OrderId),
+                PostSales(StrSubstNo(UrlLineLbl, UrlBuilder.BaseUrl(), CompanyId, OrderId),
                     LineContent('Item', CartEntry."Item No.", CartEntry.Quantity));
             until CartEntry.Next() = 0;
         Message(CartLbl);
