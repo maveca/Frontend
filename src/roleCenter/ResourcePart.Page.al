@@ -26,6 +26,10 @@ page 50118 "Resource Part"
                     ApplicationArea = All;
                     ShowCaption = false;
                     ToolTip = 'Specifies a description of the resource.';
+                    trigger OnDrillDown()
+                    begin
+                        Page.Run(Page::"Resource Card", Rec);
+                    end;
                 }
                 field(Phone; '+381 1 98 84 774')
                 {
@@ -39,6 +43,8 @@ page 50118 "Resource Part"
 
     trigger OnOpenPage()
     begin
-        Rec.FindFirst();
+        Rec.SetRange(Type, Rec.Type::Person);
+        if Rec.FindFirst() then
+            Rec.Next(Random(Rec.Count() - 1));
     end;
 }
