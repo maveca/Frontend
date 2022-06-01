@@ -14,7 +14,7 @@ page 50110 "Login Info"
         {
             group(General)
             {
-                ShowCaption = false;
+                Caption = 'Please find menus for login or register under Login Info label.';
                 field("Name"; LoginManagement.GetCurrentLogin().Name)
                 {
                     ShowCaption = false;

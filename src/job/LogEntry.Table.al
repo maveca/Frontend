@@ -21,6 +21,10 @@ table 50105 "Log Entry"
             Caption = 'Description';
             DataClassification = ToBeClassified;
         }
+        field(4; Quantity; Decimal)
+        {
+            DataClassification = ToBeClassified;
+        }
     }
     keys
     {

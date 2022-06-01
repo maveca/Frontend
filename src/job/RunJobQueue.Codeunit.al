@@ -13,6 +13,7 @@ codeunit 50107 RunJobQueue
 
         LogEntry."Created Date Time" := CurrentDateTime();
         LogEntry.Description := 'My message';
+        LogEntry.Quantity := Random(10000) / 100;
         LogEntry.Modify(true);
     end;
 }
