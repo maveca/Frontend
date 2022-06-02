@@ -46,7 +46,7 @@ page 50106 "Headline RC User"
     local procedure GetHeadingText(): Text
     var
         LoginManagement: Codeunit "Login Management";
-        FrontLbl: Label '<qualifier>Frontend</qualifier><payload>Hello dear <emphasize>%1</emphasize>, welcome to our shop.</payload>', Comment = '%1 = Username';
+        FrontLbl: Label '<qualifier>Frontend</qualifier><payload></img>Hello dear <emphasize>%1</emphasize>, welcome to our shop.</payload>', Comment = '%1 = Username';
         BackLbl: Label '<qualifier>Frontend</qualifier><payload>Please login or register as user.</payload>';
     begin
         if LoginManagement.GetCurrentUser() = '' then
